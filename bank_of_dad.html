@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bank of Dad — Schneider</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f0ede6; color: #1a2a2a; font-size: 14px; }
+#hdr { background: #1a2e2e; padding: 12px 16px; display: flex; align-items: center; gap: 12px; border-bottom: 3px solid #b8962e; }
+#hdr img { width: 38px; height: 50px; object-fit: contain; }
+#hdr h1 { font-size: 16px; font-weight: 700; color: #e8d48a; }
+#hdr p { font-size: 10px; color: #7a9a9a; text-transform: uppercase; letter-spacing: .08em; }
+#hdr-date { margin-left: auto; font-size: 11px; color: #7a9a9a; white-space: nowrap; }
+#tabs { background: #1a2e2e; border-bottom: 1px solid #2e4a4a; padding: 0 12px; display: flex; gap: 2px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+#tabs button { padding: 10px 11px; border: none; background: none; cursor: pointer; font-size: 12px; font-weight: 500; color: #7a9a9a; border-bottom: 2px solid transparent; white-space: nowrap; }
+#tabs button.active { color: #e8d48a; border-bottom-color: #b8962e; }
+#content { padding: 14px; max-width: 900px; margin: 0 auto; }
+.bal-card { background: linear-gradient(135deg,#1a2e2e,#1e3838); border-radius: 10px; padding: 14px 18px; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; border: 1px solid #2e4a4a; }
+.bal-name { font-size: 16px; font-weight: 700; color: #e8d48a; }
+.bal-amt { font-size: 28px; font-weight: 700; }
+.pos { color: #4ade80; } .neg { color: #f87171; }
+.pos-t { color: #16a34a; } .neg-t { color: #dc2626; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(130px,1fr)); gap: 10px; margin-bottom: 14px; }
+.dash-card { background: #fff; border: 1px solid #ddd8ce; border-radius: 10px; padding: 12px 14px; cursor: pointer; }
+.dash-card:hover { border-color: #b8962e; }
+.dc-name { font-size: 11px; color: #7a6a3a; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; margin-bottom: 3px; }
+.dc-bal { font-size: 17px; font-weight: 700; }
+.total-bar { background: #1a2e2e; border-radius: 10px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+.total-bar span { font-size: 12px; color: #7a9a9a; }
+.total-bar strong { font-size: 17px; font-weight: 700; color: #e8d48a; }
+.form-box { background: #fff; border: 1px solid #ddd8ce; border-radius: 10px; padding: 12px 14px; margin-bottom: 14px; }
+.form-box h3 { font-size: 10px; font-weight: 700; color: #b8962e; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 10px; }
+.form-row { display: flex; gap: 6px; flex-wrap: wrap; }
+.form-row input { padding: 8px 10px; border: 1px solid #ddd8ce; border-radius: 6px; font-size: 13px; background: #faf8f4; flex: 1; min-width: 90px; }
+.form-row input:focus { outline: none; border-color: #b8962e; }
+.btn-add { padding: 8px 14px; background: #1a2e2e; color: #e8d48a; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; white-space: nowrap; width: 100%; margin-top: 6px; }
+.hint { font-size: 11px; color: #aaa; margin-top: 6px; }
+.sec-label { font-size: 10px; font-weight: 700; color: #b8962e; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 8px; }
+/* --- TRANSACTION CARDS (mobile-first) --- */
+.tx-list { background: #fff; border-radius: 10px; border: 1px solid #ddd8ce; overflow: hidden; }
+.tx-card { padding: 10px 12px; border-bottom: 1px solid #f0ece4; }
+.tx-card:last-child { border-bottom: none; }
+.tx-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 4px; }
+.tx-desc { font-size: 13px; color: #1a2a2a; flex: 1; word-break: break-word; }
+.tx-amt { font-size: 14px; font-weight: 700; white-space: nowrap; flex-shrink: 0; }
+.tx-bot { display: flex; justify-content: space-between; align-items: center; }
+.tx-meta { font-size: 10px; color: #aaa; line-height: 1.5; }
+.tx-right { display: flex; align-items: center; gap: 10px; }
+.tx-bal { font-size: 11px; color: #999; }
+.tx-del { background: none; border: none; cursor: pointer; color: #ccc; font-size: 14px; padding: 2px 4px; }
+.tx-del:hover { color: #dc2626; }
+/* --- TABLES (overview/raw/audit) --- */
+table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 10px; overflow: hidden; border: 1px solid #ddd8ce; }
+th { text-align: left; font-size: 10px; font-weight: 700; color: #7a6a3a; padding: 9px 10px; border-bottom: 1px solid #ece8de; background: #faf8f4; text-transform: uppercase; letter-spacing: .04em; }
+td { padding: 8px 10px; border-bottom: 1px solid #f0ece4; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 160px; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: #faf8f4; }
+.btn-row { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+.btn { padding: 7px 12px; background: #fff; color: #1a2e2e; border: 1px solid #ddd8ce; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; }
+.btn:hover { border-color: #b8962e; color: #b8962e; }
+.del-btn { background: none; border: none; cursor: pointer; color: #ccc; font-size: 13px; padding: 2px 5px; }
+.del-btn:hover { color: #dc2626; }
+.empty { text-align: center; padding: 28px; color: #aaa; background: #fff; border-radius: 10px; border: 1px solid #ddd8ce; font-size: 13px; }
+.badge { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 10px; font-weight: 700; text-transform: uppercase; margin-right: 4px; }
+.bc { background: #dcfce7; color: #16a34a; }
+.bd { background: #fee2e2; color: #dc2626; }
+.br { background: #e0e7ff; color: #3730a3; }
+.import-box { background: #fff; border: 1px solid #ddd8ce; border-radius: 10px; padding: 12px 14px; margin-bottom: 12px; display: none; }
+.import-box textarea { width: 100%; padding: 8px; border: 1px solid #ddd8ce; border-radius: 6px; font-size: 12px; font-family: monospace; resize: vertical; background: #faf8f4; }
+.share-box { background: #1a2e2e; border-radius: 10px; padding: 12px 14px; margin-bottom: 14px; }
+.share-box h3 { font-size: 10px; font-weight: 700; color: #b8962e; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 8px; }
+.share-link { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.share-link span { font-size: 12px; color: #7a9a9a; width: 90px; flex-shrink: 0; }
+.share-link a { font-size: 12px; color: #e8d48a; text-decoration: none; word-break: break-all; }
+.share-link a:hover { text-decoration: underline; }
+.watermark { position: fixed; bottom: 20px; right: 20px; width: 140px; opacity: .05; pointer-events: none; z-index: 0; }
+</style>
+</head>
+<body>
+<div id="hdr">
+  <img id="crest" src="crest.png" alt="Schneider">
+  <div><h1>Bank of Dad</h1><p>Schneider Family</p></div>
+  <div id="hdr-date"></div>
+</div>
+<div id="tabs"></div>
+<img class="watermark" src="crest.png" alt="">
+<div id="content"></div>
+
+<script>
+var KIDS = ['Donald John','Gavin','Kenleigh','Emery','Elaina','Kelsey'];
+var SK = 'bod_tx_v8';
+var LK = 'bod_log_v8';
+var BASE_URL = window.location.href.replace('bank_of_dad.html','').replace(/\/$/, '');
+var SEED = [
+  ['Donald John','Beginning balance',58,'2021-01-01'],
+  ['Donald John','Report Card Reward',100,'2021-06-01'],
+  ['Donald John','End of School Reward',50,'2021-06-01'],
+  ['Donald John','Minecraft Ninja Mashup',-10,'2021-06-15'],
+  ['Donald John','space pioneer switch',-2,'2021-07-01'],
+  ['Donald John','left door open',-1,'2021-07-10'],
+  ['Donald John','left door open',-1,'2021-07-15'],
+  ['Donald John',"didn't put a liner in",-1,'2021-07-20'],
+  ['Donald John','left door open',-1,'2021-07-25'],
+  ['Donald John','Minecraft Dungeons',-20,'2021-08-01'],
+  ['Donald John','Robux',-5,'2021-09-01'],
+  ['Donald John','Amoung Us (Switch)',-5,'2021-10-01'],
+  ['Donald John','FNAF Help Wanted - Switch',-30,'2021-11-01'],
+  ['Donald John','Fortnite Battle Pass',-8,'2021-12-01'],
+  ['Donald John','new FNAF game (phone)',-5,'2022-01-01'],
+  ['Donald John','800 Robux for Lion',-9,'2022-02-01'],
+  ['Donald John','4 failed spelling tests',-40,'2022-03-01'],
+  ['Donald John','punishment*',-20,'2022-04-01'],
+  ['Donald John','Deposit Cash',13.15,'2022-05-01'],
+  ['Donald John',"five nights at Freddy's security breach",-40,'2022-06-01'],
+  ['Donald John','Kelsey Present',40,'2022-07-01'],
+  ['Donald John','Population One (Quest 2)',-30,'2022-08-01'],
+  ['Donald John','Robux',-11,'2022-09-01'],
+  ['Donald John','transaction',-11,'2022-05-25'],
+  ['Donald John','transaction',10,'2022-05-25'],
+  ['Donald John','transaction',-12.51,'2022-05-26'],
+  ['Donald John','transaction',10,'2022-06-05'],
+  ['Donald John','transaction',12,'2022-06-05'],
+  ['Donald John','transaction',20,'2022-06-21'],
+  ['Donald John','transaction',12,'2022-06-21'],
+  ['Donald John','transaction',10,'2022-06-25'],
+  ['Donald John','transaction',4,'2022-06-30'],
+  ['Donald John','transaction',5,'2022-07-03'],
+  ['Donald John','transaction',-15,'2022-07-09'],
+  ['Donald John','transaction',-5,'2022-07-14'],
+  ['Donald John','transaction',-1,'2022-07-19'],
+  ['Donald John','transaction',-10,'2022-08-03'],
+  ['Donald John','transaction',-5,'2022-08-08'],
+  ['Donald John','transaction',31.79,'2022-08-28'],
+  ['Donald John','transaction',-5,'2022-08-14'],
+  ['Donald John','transaction',1,'2022-09-05'],
+  ['Donald John','transaction',5,'2022-09-12'],
+  ['Donald John','transaction',2,'2022-09-13'],
+  ['Donald John','transaction',2,'2022-09-20'],
+  ['Donald John','transaction',1,'2022-09-22'],
+  ['Donald John','transaction',2,'2022-09-26'],
+  ['Donald John','transaction',1,'2022-09-27'],
+  ['Donald John','transaction',-2,'2022-09-27'],
+  ['Donald John','transaction',-2,'2022-09-27'],
+  ['Donald John','transaction',1,'2022-09-27'],
+  ['Donald John','transaction',-20,'2022-10-01'],
+  ['Donald John','transaction',-4,'2022-10-02'],
+  ['Donald John','transaction',-1,'2022-10-02'],
+  ['Donald John','transaction',1,'2022-10-02'],
+  ['Donald John','Gavin bat dragon bet / KLS smartwatch payoff',-3,'2022-10-07'],
+  ['Donald John','transaction',-10,'2022-10-14'],
+  ['Donald John','transaction',2,'2022-10-25'],
+  ['Donald John','transaction',10,'2022-11-03'],
+  ['Donald John','transaction',-1,'2022-11-13'],
+  ['Donald John','transaction',-1,'2022-11-13'],
+  ['Donald John','transaction',5,'2023-01-17'],
+  ['Donald John','transaction',-1,'2023-01-21'],
+  ['Donald John','transaction',21.5,'2023-01-21'],
+  ['Donald John','transaction',-65,'2023-03-12'],
+  ['Donald John','transaction',5,'2023-03-12'],
+  ['Donald John','transaction',2,'2023-03-12'],
+  ['Donald John',"Jen's BDay bet",52,'2023-03-19'],
+  ['Donald John','transaction',2,'2023-04-10'],
+  ['Donald John','FNAF',-15,'2023-04-11'],
+  ['Donald John','Customized Xbox controller',-80.54,'2023-05-08'],
+  ['Donald John','John giving adopt me pets to Kenly',15,'2023-05-08'],
+  ['Donald John','transaction',12.25,'2023-06-13'],
+  ['Donald John','transaction',10,'2023-07-03'],
+  ['Donald John','transaction',30,'2023-07-12'],
+  ['Donald John','transaction',-2,'2023-08-03'],
+  ['Donald John','transaction',-2,'2023-08-03'],
+  ['Donald John','transaction',40,'2023-08-03'],
+  ['Donald John','transaction',40,'2023-08-20'],
+  ['Donald John','transaction',40,'2023-08-27'],
+  ['Donald John','transaction',20,'2023-08-28'],
+  ['Donald John','transaction',5,'2023-09-11'],
+  ['Donald John','transaction',5,'2023-09-16'],
+  ['Donald John','transaction',40,'2023-09-16'],
+  ['Donald John','transaction',5,'2024-03-25'],
+  ['Donald John','transaction',80,'2024-04-21'],
+  ['Donald John','transaction',40,'2024-04-21'],
+  ['Donald John','transaction',20,'2024-07-02'],
+  ['Donald John','farm',45,'2024-06-04'],
+  ['Donald John','lawn',40,'2024-06-04'],
+  ['Donald John','transaction',50,'2024-07-11'],
+  ['Donald John','transaction',20,'2024-08-01'],
+  ['Donald John','transaction',40,'2024-10-12'],
+  ['Donald John','transaction',250,'2024-08-24'],
+  ['Donald John','transaction',60,'2024-10-06'],
+  ['Donald John','Farm cut July 4',75,'2024-12-11'],
+  ['Donald John','wood',30,'2025-02-01'],
+  ['Donald John','transaction',174.36,'2025-02-06'],
+  ['Donald John','transaction',5,'2025-02-08'],
+  ['Donald John','transaction',5,'2025-03-04'],
+  ['Donald John','transaction',-1150,'2025-03-04'],
+  ['Donald John','transaction',-4,'2025-03-04'],
+  ['Donald John','transaction',80,'2025-03-05'],
+  ['Donald John','transaction',10,'2025-03-05'],
+  ['Donald John','transaction',-10,'2025-09-06'],
+  ['Donald John','transaction',-5,'2025-08-19'],
+  ['Donald John','transaction',-1,'2025-11-06'],
+  ['Donald John','transaction',-39.99,'2025-11-21'],
+  ['Donald John','transaction',-20,'2025-12-13'],
+  ['Donald John','transaction',20,'2026-01-24'],
+  ['Donald John','transaction',25,'2026-02-22'],
+  ['Gavin','Beginning balance',110,'2021-01-01'],
+  ['Gavin','Report Card Reward',125,'2021-06-01'],
+  ['Gavin','End of School Reward',50,'2021-06-01'],
+  ['Gavin','Minecraft Ninja Mashup',-10,'2021-06-15'],
+  ['Gavin','Super Mario Maker 2',-60,'2021-07-01'],
+  ['Gavin','left door open',-1,'2021-07-15'],
+  ['Gavin','Xbox Gamertag Change',-10,'2021-08-01'],
+  ['Gavin','Minecraft Dungeons',-20,'2021-09-01'],
+  ['Gavin','Amoung Us (Switch)',-5,'2021-10-01'],
+  ['Gavin','new FNAF game (phone)',-5,'2022-01-01'],
+  ['Gavin','Gavin purchased Fortnite skin for Donald John',-16,'2021-07-25'],
+  ['Gavin','Frozen Legends pack for fortnite',-20,'2022-03-01'],
+  ['Gavin','Deposit Cash',30,'2022-04-01'],
+  ['Gavin','Books Read',4,'2022-05-01'],
+  ['Gavin','Kelsey Present',40,'2022-06-01'],
+  ['Gavin','Population One (Quest 2)',-30,'2022-07-01'],
+  ['Gavin','Ultimate Custom Night (mobile game)',-3,'2022-08-01'],
+  ['Gavin','Easter Egg Hunt',6,'2022-04-17'],
+  ['Gavin','transaction',15,'2022-05-25'],
+  ['Gavin','transaction',0.75,'2022-05-26'],
+  ['Gavin','transaction',-1,'2022-06-05'],
+  ['Gavin','transaction',1.5,'2022-06-05'],
+  ['Gavin','transaction',10,'2022-06-21'],
+  ['Gavin','transaction',-4,'2022-06-30'],
+  ['Gavin','transaction',-1,'2022-07-03'],
+  ['Gavin','transaction',-1,'2022-07-08'],
+  ['Gavin','transaction',-5,'2022-07-17'],
+  ['Gavin','transaction',-1,'2022-07-17'],
+  ['Gavin','transaction',-5,'2022-07-19'],
+  ['Gavin','transaction',-5,'2022-08-03'],
+  ['Gavin','transaction',-5,'2022-08-08'],
+  ['Gavin','transaction',-5,'2022-08-14'],
+  ['Gavin','transaction',1.25,'2022-08-29'],
+  ['Gavin','transaction',-1,'2022-09-05'],
+  ['Gavin','transaction',-5,'2022-09-12'],
+  ['Gavin','transaction',-2,'2022-09-13'],
+  ['Gavin','transaction',-2,'2022-09-20'],
+  ['Gavin','transaction',-1,'2022-09-22'],
+  ['Gavin','transaction',-2,'2022-09-23'],
+  ['Gavin','transaction',-2,'2022-09-26'],
+  ['Gavin','transaction',-3,'2022-09-23'],
+  ['Gavin','transaction',-1,'2022-09-27'],
+  ['Gavin','transaction',2,'2022-09-27'],
+  ['Gavin','transaction',2,'2022-09-27'],
+  ['Gavin','transaction',-2,'2022-09-27'],
+  ['Gavin','transaction',-1,'2022-09-27'],
+  ['Gavin','transaction',-2,'2022-09-27'],
+  ['Gavin','transaction',-20,'2022-10-01'],
+  ['Gavin','transaction',4,'2022-10-02'],
+  ['Gavin','transaction',1,'2022-10-02'],
+  ['Gavin','transaction',-1,'2022-10-02'],
+  ['Gavin','Bat dragon bet / KLS smartwatch / Gavin cube payoff',-20,'2022-10-07'],
+  ['Gavin','transaction',20,'2022-11-13'],
+  ['Gavin','transaction',-2,'2022-11-13'],
+  ['Gavin','transaction',-5,'2023-01-17'],
+  ['Gavin','transaction',-3,'2023-01-17'],
+  ['Gavin','transaction',-21.5,'2023-01-21'],
+  ['Gavin','transaction',-1,'2023-01-21'],
+  ['Gavin','transaction',-5,'2023-03-12'],
+  ['Gavin','transaction',40,'2023-07-03'],
+  ['Gavin','transaction',-4,'2023-05-28'],
+  ['Gavin','transaction',-13.77,'2023-06-05'],
+  ['Gavin','transaction',47.22,'2023-06-06'],
+  ['Gavin','transaction',23,'2023-06-13'],
+  ['Gavin','transaction',-1,'2023-06-21'],
+  ['Gavin','transaction',-8.47,'2023-07-01'],
+  ['Gavin','transaction',-1,'2023-07-02'],
+  ['Gavin','transaction',-1,'2023-07-08'],
+  ['Gavin','transaction',-3,'2023-07-12'],
+  ['Gavin','transaction',-2,'2023-08-03'],
+  ['Gavin','transaction',1,'2023-08-03'],
+  ['Gavin','transaction',2,'2023-08-03'],
+  ['Gavin','transaction',6.25,'2023-08-20'],
+  ['Gavin','transaction',-71,'2023-09-11'],
+  ['Gavin','transaction',-5,'2024-03-25'],
+  ['Gavin','transaction',-5,'2023-09-16'],
+  ['Gavin','transaction',-5,'2023-09-16'],
+  ['Gavin','transaction',-5,'2023-09-16'],
+  ['Gavin','transaction',-5,'2023-09-16'],
+  ['Gavin','transaction',-5,'2023-09-16'],
+  ['Gavin','transaction',-4,'2023-09-16'],
+  ['Gavin','transaction',-5,'2024-01-30'],
+  ['Gavin','transaction',-5,'2024-01-30'],
+  ['Gavin','transaction',-5,'2024-01-30'],
+  ['Gavin','transaction',-5,'2024-04-21'],
+  ['Gavin','transaction',-23,'2024-07-02'],
+  ['Gavin','transaction',40,'2024-08-01'],
+  ['Gavin','transaction',-25,'2024-10-12'],
+  ['Gavin','transaction',-9,'2024-08-24'],
+  ['Gavin','transaction',-10,'2024-10-06'],
+  ['Gavin','wood',20,'2025-02-01'],
+  ['Gavin','transaction',10,'2025-02-06'],
+  ['Gavin','transaction',10,'2025-02-08'],
+  ['Gavin','transaction',0.77,'2025-03-04'],
+  ['Gavin','transaction',50,'2025-03-04'],
+  ['Gavin','transaction',-5,'2025-03-04'],
+  ['Gavin','transaction',-5,'2025-03-05'],
+  ['Gavin','transaction',-5,'2025-03-05'],
+  ['Gavin','transaction',-4,'2025-09-06'],
+  ['Gavin','transaction',-10,'2025-08-19'],
+  ['Gavin','transaction',-20,'2025-11-06'],
+  ['Gavin','transaction',-18.64,'2025-11-21'],
+  ['Gavin','transaction',-16,'2025-12-13'],
+  ['Gavin','transaction',-12,'2026-01-24'],
+  ['Gavin','transaction',-40,'2026-02-22'],
+  ['Gavin','transaction',25,'2026-04-13'],
+  ['Gavin','transaction',25,'2026-04-13'],
+  ['Gavin','transaction',-50,'2026-04-13'],
+  ['Gavin','transaction',25,'2026-05-16'],
+  ['Kenleigh','Beginning balance',10,'2021-01-01'],
+  ['Kenleigh','Report Card Reward',6,'2021-06-01'],
+  ['Kenleigh','End of School Reward',7,'2021-06-01'],
+  ['Kenleigh','Minecraft Ninja Mashup',2,'2021-06-15'],
+  ['Kenleigh','Super Mario Maker 2',1,'2021-07-01'],
+  ['Kenleigh','space pioneer switch',1,'2021-07-10'],
+  ['Kenleigh','Cash Deposit',7.71,'2022-04-10'],
+  ['Kenleigh','Easter Egg Hunt',1,'2022-04-17'],
+  ['Kenleigh','transaction',2,'2022-05-09'],
+  ['Kenleigh','transaction',-15,'2022-05-12'],
+  ['Kenleigh','transaction',-0.75,'2022-05-26'],
+  ['Kenleigh','transaction',-1.5,'2022-06-05'],
+  ['Kenleigh','transaction',2,'2022-06-21'],
+  ['Kenleigh','transaction',2,'2022-06-21'],
+  ['Kenleigh','transaction',-0.5,'2022-06-25'],
+  ['Kenleigh','transaction',2,'2022-06-30'],
+  ['Kenleigh','transaction',2,'2022-07-03'],
+  ['Kenleigh','transaction',2,'2022-07-08'],
+  ['Kenleigh','transaction',2,'2022-07-09'],
+  ['Kenleigh','transaction',3,'2022-07-17'],
+  ['Kenleigh','transaction',-2,'2022-07-17'],
+  ['Kenleigh','transaction',1,'2022-07-17'],
+  ['Kenleigh','transaction',-1,'2022-07-19'],
+  ['Kenleigh','transaction',-1,'2022-08-03'],
+  ['Kenleigh','transaction',7,'2022-08-08'],
+  ['Kenleigh','transaction',1.26,'2022-08-28'],
+  ['Kenleigh','transaction',2,'2022-09-12'],
+  ['Kenleigh','transaction',2,'2022-09-23'],
+  ['Kenleigh','transaction',0.25,'2022-09-26'],
+  ['Kenleigh','transaction',2,'2022-09-27'],
+  ['Kenleigh','transaction',2,'2022-09-27'],
+  ['Kenleigh','transaction',1,'2022-11-13'],
+  ['Kenleigh','transaction',2,'2023-01-17'],
+  ['Kenleigh','Adopt me pets from John',-15,'2023-05-08'],
+  ['Kenleigh','transaction',12,'2023-06-13'],
+  ['Kenleigh','transaction',8,'2023-06-13'],
+  ['Kenleigh','transaction',6,'2023-06-21'],
+  ['Kenleigh','transaction',2,'2023-08-03'],
+  ['Kenleigh','transaction',2,'2023-08-03'],
+  ['Kenleigh','transaction',20,'2023-08-20'],
+  ['Kenleigh','transaction',13,'2023-09-11'],
+  ['Kenleigh','transaction',5,'2024-03-25'],
+  ['Kenleigh','transaction',5,'2024-07-02'],
+  ['Kenleigh','transaction',2,'2024-10-06'],
+  ['Kenleigh','Farm cut July 4',12,'2024-12-11'],
+  ['Kenleigh','wood',65,'2025-02-01'],
+  ['Kenleigh','transaction',50,'2025-02-06'],
+  ['Kenleigh','transaction',-115,'2025-02-08'],
+  ['Kenleigh','transaction',50,'2025-03-04'],
+  ['Kenleigh','transaction',25,'2025-03-04'],
+  ['Kenleigh','transaction',5,'2025-03-04'],
+  ['Kenleigh','transaction',2,'2025-03-05'],
+  ['Kenleigh','transaction',1,'2025-03-05'],
+  ['Kenleigh','transaction',1,'2025-09-06'],
+  ['Kenleigh','transaction',15,'2025-08-19'],
+  ['Kenleigh','transaction',5,'2025-11-06'],
+  ['Kenleigh','transaction',13,'2025-11-21'],
+  ['Kenleigh','transaction',1,'2025-12-13'],
+  ['Kenleigh','transaction',5,'2026-01-24'],
+  ['Kenleigh','transaction',20,'2026-02-22'],
+  ['Kenleigh','transaction',10,'2026-04-13'],
+  ['Kenleigh','transaction',0.53,'2026-04-13'],
+  ['Kenleigh','transaction',5,'2026-04-13'],
+  ['Kenleigh','transaction',4,'2026-05-16'],
+  ['Kenleigh','transaction',21,'2026-05-10'],
+  ['Kenleigh','transaction',2,'2026-05-18'],
+  ['Kenleigh','transaction',-13.76,'2026-05-18'],
+  ['Kenleigh','transaction',1,'2026-05-18'],
+  ['Emery','Beginning balance',0,'2021-01-01'],
+  ['Emery','transaction',1,'2022-07-14'],
+  ['Emery','transaction',1,'2022-07-08'],
+  ['Emery','transaction',5,'2022-08-11'],
+  ['Emery','transaction',6,'2022-09-06'],
+  ['Emery','transaction',20,'2025-12-13'],
+  ['Emery','transaction',20,'2026-01-24'],
+  ['Elaina','Beginning balance',0,'2021-01-01'],
+  ['Elaina','Tooth Fairy (1st tooth)',6,'2026-05-25'],
+  ['Kelsey','Beginning balance',0,'2021-01-01']
+];
+
+var TX = [], LOG = [], currentTab = 'dashboard';
+
+function loadState() {
+  try { var r = localStorage.getItem(SK); TX = r ? JSON.parse(r) : seedTx(); } catch(e) { TX = seedTx(); }
+  try { var l = localStorage.getItem(LK); LOG = l ? JSON.parse(l) : []; } catch(e) { LOG = []; }
+}
+function seedTx() { return SEED.map(function(s,i){ return {id:'s'+i,kid:s[0],desc:s[1],amount:s[2],date:s[3],createdAt:'2021-01-01T00:00:00Z'}; }); }
+function saveState() {
+  try { localStorage.setItem(SK, JSON.stringify(TX)); localStorage.setItem(LK, JSON.stringify(LOG.slice(-2000))); } catch(e) {}
+}
+function fmt(n) { return (n<0?'-':'')+'$'+Math.abs(n).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,','); }
+function fmtDate(d) { return new Date(d+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'2-digit'}); }
+function fmtTS(iso) { if(!iso) return ''; var d=new Date(iso); return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'2-digit'})+' '+d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}); }
+function bal(kid) { var s=0; for(var i=0;i<TX.length;i++) if(TX[i].kid===kid) s+=TX[i].amount; return s; }
+function addLog(action,kid,desc,amount,txDate,extra) { LOG.push({ts:new Date().toISOString(),action:action,kid:kid,desc:desc,amount:amount,txDate:txDate,extra:extra||''}); }
+function el(id) { return document.getElementById(id); }
+function ce(tag,cls,txt) { var e=document.createElement(tag); if(cls) e.className=cls; if(txt!==undefined) e.textContent=txt; return e; }
+
+function setTab(t) { currentTab=t; render(); window.scrollTo(0,0); }
+
+function render() {
+  el('hdr-date').textContent = new Date().toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'});
+  var tabBar = el('tabs');
+  tabBar.innerHTML = '';
+  ['dashboard'].concat(KIDS).concat(['rawdata','auditlog']).forEach(function(t) {
+    var labels = {dashboard:'Overview',rawdata:'Raw Data',auditlog:'Audit Log'};
+    var btn = ce('button','',labels[t]||t);
+    if(t===currentTab) btn.className='active';
+    btn.addEventListener('click',(function(tab){return function(){setTab(tab);};})(t));
+    tabBar.appendChild(btn);
+  });
+  var c = el('content');
+  c.innerHTML = '';
+  if(currentTab==='dashboard') renderDashboard(c);
+  else if(currentTab==='rawdata') renderRaw(c);
+  else if(currentTab==='auditlog') renderAudit(c);
+  else renderKid(c, currentTab);
+}
+
+function renderDashboard(c) {
+  var total=0, grid=ce('div','grid');
+  KIDS.forEach(function(k) {
+    var b=bal(k); total+=b;
+    var card=ce('div','dash-card');
+    card.appendChild(ce('div','dc-name',k));
+    card.appendChild(ce('div','dc-bal '+(b>=0?'pos-t':'neg-t'),fmt(b)));
+    card.addEventListener('click',(function(kid){return function(){setTab(kid);};})(k));
+    grid.appendChild(card);
+  });
+  c.appendChild(grid);
+  var tb=ce('div','total-bar');
+  tb.appendChild(ce('span','','Total across all accounts'));
+  tb.appendChild(ce('strong','',fmt(total)));
+  c.appendChild(tb);
+  c.appendChild(ce('div','sec-label','12 most recent transactions'));
+  var recent=TX.slice().sort(function(a,b){return b.date.localeCompare(a.date);}).slice(0,12);
+  var tbl=buildTable(['Date','Kid','Description','Amount'],recent.map(function(t){
+    return [
+      {txt:fmtDate(t.date),style:'color:#aaa;font-size:11px;width:65px'},
+      {txt:t.kid,style:'color:#b8962e;font-weight:600;font-size:11px;width:80px'},
+      {txt:t.desc},
+      {txt:fmt(t.amount),style:(t.amount>=0?'color:#16a34a':'color:#dc2626')+';text-align:right;font-weight:600;white-space:nowrap'}
+    ];
+  }));
+  c.appendChild(tbl);
+}
+
+function renderKid(c, kid) {
+  var b=bal(kid);
+  var bc=ce('div','bal-card');
+  bc.appendChild(ce('div','bal-name',kid));
+  bc.appendChild(ce('div','bal-amt '+(b>=0?'pos':'neg'),fmt(b)));
+  c.appendChild(bc);
+
+  // Share link box
+  var sb=ce('div','share-box');
+  var sh=ce('h3','','Read-Only Link for '+kid);
+  sb.appendChild(sh);
+  var sl=ce('div','share-link');
+  var kidFile = 'bod_'+kid.toLowerCase().replace(/ /g,'_')+'.html';
+  var url = BASE_URL+'/'+kidFile;
+  sl.appendChild(ce('span','','Share link:'));
+  var a=ce('a','',url);
+  a.href=url; a.target='_blank';
+  sl.appendChild(a);
+  sb.appendChild(sl);
+  var note=ce('div','','');
+  note.style.cssText='font-size:11px;color:#7a9a9a;margin-top:4px';
+  note.textContent='Upload '+kidFile+' to GitHub alongside bank_of_dad.html';
+  sb.appendChild(note);
+  c.appendChild(sb);
+
+  // Add form
+  var form=ce('div','form-box');
+  form.appendChild(ce('h3','','Add Transaction'));
+  var row=ce('div','form-row');
+  var dIn=document.createElement('input'); dIn.type='text'; dIn.placeholder='Description'; dIn.id='inp-d'; dIn.style.flex='2';
+  var aIn=document.createElement('input'); aIn.type='number'; aIn.placeholder='Amount'; aIn.id='inp-a'; aIn.step='0.01';
+  var dtIn=document.createElement('input'); dtIn.type='date'; dtIn.id='inp-dt';
+  dtIn.value=new Date().toISOString().split('T')[0];
+  row.appendChild(dIn); row.appendChild(aIn); row.appendChild(dtIn);
+  form.appendChild(row);
+  var addBtn=ce('button','btn-add','+ Add Transaction');
+  addBtn.addEventListener('click',function(){
+    var d=el('inp-d').value.trim(), a=parseFloat(el('inp-a').value), dt=el('inp-dt').value;
+    if(!d||isNaN(a)||!dt){alert('Please fill in all fields.');return;}
+    TX.push({id:Date.now()+Math.random(),kid:kid,desc:d,amount:a,date:dt,createdAt:new Date().toISOString()});
+    addLog('CREATE',kid,d,a,dt,'');
+    saveState(); setTab(kid);
+  });
+  form.appendChild(addBtn);
+  form.appendChild(ce('div','hint','Use negative numbers for deductions (e.g. -10.00)'));
+  c.appendChild(form);
+
+  var kidTx=TX.filter(function(t){return t.kid===kid;}).sort(function(a,b){return b.date.localeCompare(a.date);});
+  c.appendChild(ce('div','sec-label',kidTx.length+' transactions — newest first'));
+  if(!kidTx.length){c.appendChild(ce('div','empty','No transactions yet'));return;}
+
+  var running=b, list=ce('div','tx-list');
+  kidTx.forEach(function(t) {
+    var tb2=running; running-=t.amount;
+    var card=ce('div','tx-card');
+
+    // Top row: description + amount
+    var top=ce('div','tx-top');
+    var desc=ce('div','tx-desc',t.desc); desc.title=t.desc;
+    var amt=ce('div','tx-amt '+(t.amount>=0?'pos-t':'neg-t'),fmt(t.amount));
+    top.appendChild(desc); top.appendChild(amt);
+
+    // Bottom row: date/created + balance + delete
+    var bot=ce('div','tx-bot');
+    var meta=ce('div','tx-meta');
+    meta.appendChild(document.createTextNode(fmtDate(t.date)));
+    meta.appendChild(document.createElement('br'));
+    meta.appendChild(document.createTextNode('Added: '+fmtTS(t.createdAt)));
+    var right=ce('div','tx-right');
+    right.appendChild(ce('div','tx-bal','Bal: '+fmt(tb2)));
+    var db=ce('button','tx-del','✕');
+    db.addEventListener('click',(function(tid){return function(){delTx(tid);};})(t.id));
+    right.appendChild(db);
+    bot.appendChild(meta); bot.appendChild(right);
+
+    card.appendChild(top); card.appendChild(bot);
+    list.appendChild(card);
+  });
+  c.appendChild(list);
+}
+
+function renderRaw(c) {
+  var brow=ce('div','btn-row');
+  var expB=ce('button','btn','⬇ Export CSV'); expB.addEventListener('click',exportCSV);
+  var impB=ce('button','btn','⬆ Import CSV');
+  var rstB=ce('button','btn','↺ Reset'); rstB.addEventListener('click',resetData);
+  brow.appendChild(expB); brow.appendChild(impB); brow.appendChild(rstB);
+  c.appendChild(brow);
+
+  var ibox=ce('div','import-box'); ibox.id='ibox';
+  var ta=document.createElement('textarea'); ta.rows=4; ta.placeholder='2024-01-15,Donald John,Birthday money,20.00';
+  var ibrow=ce('div','btn-row'); ibrow.style.marginTop='8px';
+  var doI=ce('button','btn-add',''); doI.textContent='✓ Import'; doI.style.cssText='width:auto;margin-top:0;padding:7px 14px';
+  var canI=ce('button','btn','Cancel');
+  doI.addEventListener('click',function(){doImport(ta.value);});
+  canI.addEventListener('click',function(){ibox.style.display='none';});
+  ibrow.appendChild(doI); ibrow.appendChild(canI);
+  ibox.appendChild(ce('div','sec-label','Paste CSV — Date, Kid, Description, Amount'));
+  ibox.appendChild(ta); ibox.appendChild(ibrow);
+  c.appendChild(ibox);
+  impB.addEventListener('click',function(){ibox.style.display=ibox.style.display==='block'?'none':'block';});
+
+  var all=TX.slice().sort(function(a,b){return b.date.localeCompare(a.date);});
+  c.appendChild(ce('div','sec-label',all.length+' total transactions'));
+  var wrap=ce('div',''); wrap.style.overflowX='auto';
+  var tbl=buildTable(['Date','Kid','Description','Amount','Created',''],all.map(function(t){
+    return [
+      {txt:fmtDate(t.date),style:'color:#aaa;font-size:11px;width:65px'},
+      {txt:t.kid,style:'color:#b8962e;font-weight:600;font-size:11px'},
+      {txt:t.desc,title:t.desc},
+      {txt:fmt(t.amount),style:(t.amount>=0?'color:#16a34a':'color:#dc2626')+';text-align:right;font-weight:600;white-space:nowrap'},
+      {txt:fmtTS(t.createdAt),style:'color:#aaa;font-size:10px;white-space:nowrap'},
+      {del:t.id}
+    ];
+  }));
+  wrap.appendChild(tbl); c.appendChild(wrap);
+}
+
+function renderAudit(c) {
+  var sorted=LOG.slice().reverse();
+  if(!sorted.length){c.appendChild(ce('div','empty','No audit events yet.'));return;}
+  c.appendChild(ce('div','sec-label',sorted.length+' audit events — newest first'));
+  var wrap=ce('div',''); wrap.style.overflowX='auto';
+  var tbl=buildTable(['Time','Action','Kid','Description','Amount'],sorted.map(function(e){
+    var bc=e.action==='CREATE'?'bc':e.action==='DELETE'?'bd':'br';
+    return [
+      {txt:fmtTS(e.ts),style:'font-size:10px;color:#aaa;white-space:nowrap'},
+      {html:'<span class="badge '+bc+'">'+e.action+'</span>'},
+      {txt:e.kid,style:'color:#b8962e;font-weight:600;font-size:11px'},
+      {txt:e.desc,title:e.desc},
+      {txt:fmt(e.amount),style:(e.amount>=0?'color:#16a34a':'color:#dc2626')+';text-align:right;font-weight:600;white-space:nowrap'}
+    ];
+  }));
+  wrap.appendChild(tbl); c.appendChild(wrap);
+}
+
+function buildTable(headers, rows) {
+  var tbl=document.createElement('table');
+  var thead=tbl.createTHead(); var hr=thead.insertRow();
+  headers.forEach(function(h){var th=document.createElement('th');th.textContent=h;hr.appendChild(th);});
+  var tbody=tbl.createTBody();
+  rows.forEach(function(cells){
+    var row=tbody.insertRow();
+    cells.forEach(function(cell){
+      var td=row.insertCell();
+      if(cell.del!==undefined){
+        var db=ce('button','del-btn','✕');
+        db.addEventListener('click',(function(tid){return function(){delTx(tid);};})(cell.del));
+        td.appendChild(db); td.style.textAlign='right';
+      } else if(cell.html){
+        td.innerHTML=cell.html;
+      } else {
+        td.textContent=cell.txt||'';
+        if(cell.style) td.style.cssText=cell.style;
+        if(cell.title){td.title=cell.title; td.style.maxWidth='180px'; td.style.overflow='hidden'; td.style.textOverflow='ellipsis';}
+      }
+    });
+  });
+  return tbl;
+}
+
+function delTx(id) {
+  var tx=null;
+  for(var i=0;i<TX.length;i++) if(String(TX[i].id)===String(id)){tx=TX[i];break;}
+  if(!tx||!confirm('Delete "'+tx.desc+'" ('+fmt(tx.amount)+') for '+tx.kid+'?')) return;
+  addLog('DELETE',tx.kid,tx.desc,tx.amount,tx.date,'Deleted '+fmtTS(new Date().toISOString()));
+  TX=TX.filter(function(t){return String(t.id)!==String(id);});
+  saveState(); render();
+}
+
+function exportCSV() {
+  var rows=[['Date','Kid','Description','Amount','CreatedAt']];
+  TX.forEach(function(t){rows.push([t.date,t.kid,t.desc,t.amount.toFixed(2),t.createdAt||'']);});
+  var csv=rows.map(function(r){return r.map(function(v){return '"'+String(v).replace(/"/g,'""')+'"';}).join(',');}).join('\n');
+  var a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'})); a.download='bank_of_dad.csv'; a.click();
+}
+
+function doImport(text) {
+  var lines=text.trim().split('\n').filter(function(l){return l.trim();});
+  var added=0;
+  lines.forEach(function(line){
+    var p=line.split(',').map(function(x){return x.replace(/^"|"$/g,'').trim();});
+    if(p.length>=4&&KIDS.indexOf(p[1])>=0&&!isNaN(parseFloat(p[3]))){
+      TX.push({id:Date.now()+Math.random(),kid:p[1],desc:p[2],amount:parseFloat(p[3]),date:p[0],createdAt:new Date().toISOString()});
+      addLog('CREATE',p[1],p[2],parseFloat(p[3]),p[0],'CSV import');
+      added++;
+    }
+  });
+  saveState(); alert(added+' imported.'); render();
+}
+
+function resetData() {
+  if(!confirm('Reset all data? Cannot be undone.')) return;
+  TX=seedTx();
+  addLog('RESET','ALL','Reset to seed',0,'','');
+  saveState(); render();
+}
+
+loadState();
+render();
+</script>
+</body>
+</html>
