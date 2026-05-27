@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Emery — Bank of Dad</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f0ede6; color: #1a2a2a; font-size: 14px; }
+#hdr { background: #1a2e2e; padding: 12px 16px; display: flex; align-items: center; gap: 12px; border-bottom: 3px solid #b8962e; }
+#hdr img { width: 38px; height: 50px; object-fit: contain; }
+#hdr h1 { font-size: 16px; font-weight: 700; color: #e8d48a; }
+#hdr p { font-size: 10px; color: #7a9a9a; text-transform: uppercase; letter-spacing: .08em; }
+.banner { background: #b8962e; color: #1a2e2e; text-align: center; padding: 6px; font-size: 11px; font-weight: 700; letter-spacing: .06em; }
+#content { padding: 14px; max-width: 700px; margin: 0 auto; }
+.bal-card { background: linear-gradient(135deg,#1a2e2e,#1e3838); border-radius: 10px; padding: 14px 18px; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; border: 1px solid #2e4a4a; }
+.bal-name { font-size: 16px; font-weight: 700; color: #e8d48a; }
+.bal-amt { font-size: 28px; font-weight: 700; }
+.pos { color: #4ade80; } .neg { color: #f87171; }
+.pos-t { color: #16a34a; } .neg-t { color: #dc2626; }
+.sec-label { font-size: 10px; font-weight: 700; color: #b8962e; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 8px; }
+.tx-list { background: #fff; border-radius: 10px; border: 1px solid #ddd8ce; overflow: hidden; }
+.tx-card { padding: 10px 12px; border-bottom: 1px solid #f0ece4; }
+.tx-card:last-child { border-bottom: none; }
+.tx-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 4px; }
+.tx-desc { font-size: 13px; color: #1a2a2a; flex: 1; word-break: break-word; }
+.tx-amt { font-size: 14px; font-weight: 700; white-space: nowrap; flex-shrink: 0; }
+.tx-bot { display: flex; justify-content: space-between; align-items: center; }
+.tx-meta { font-size: 10px; color: #aaa; line-height: 1.5; }
+.tx-bal { font-size: 11px; color: #999; }
+.empty { text-align: center; padding: 28px; color: #aaa; background: #fff; border-radius: 10px; border: 1px solid #ddd8ce; }
+.status { text-align: center; padding: 12px; font-size: 12px; color: #888; }
+</style>
+</head>
+<body>
+<div id="hdr">
+  <img src="crest.png" alt="Schneider">
+  <div><h1>Bank of Dad</h1><p>Schneider Family</p></div>
+</div>
+<div class="banner">READ-ONLY — EMERY</div>
+<div id="content"><div class="status">Loading...</div></div>
+<script>
+var KID = 'Emery';
+var DATA_URL = 'https://raw.githubusercontent.com/schneidjii/schneidjii.github.io/main/bod_data.json';
+function fmt(n){return(n<0?'-':'')+'$'+Math.abs(n).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,',');}
+function fmtDate(d){return new Date(d+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'2-digit'});}
+function fmtTS(iso){if(!iso)return'';var d=new Date(iso);return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'2-digit'})+' '+d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});}
+
+function render(TX) {
+  var kidTx=TX.filter(function(t){return t.kid===KID;}).sort(function(a,b){return b.date.localeCompare(a.date);});
+  var b=kidTx.reduce(function(s,t){return s+t.amount;},0);
+  var c=document.getElementById('content');
+  c.innerHTML='';
+  var bc=document.createElement('div'); bc.className='bal-card';
+  var bn=document.createElement('div'); bn.className='bal-name'; bn.textContent=KID;
+  var ba=document.createElement('div'); ba.className='bal-amt '+(b>=0?'pos':'neg'); ba.textContent=fmt(b);
+  bc.appendChild(bn); bc.appendChild(ba); c.appendChild(bc);
+  var sl=document.createElement('div'); sl.className='sec-label';
+  sl.textContent=kidTx.length+' transactions — newest first'; c.appendChild(sl);
+  if(!kidTx.length){var em=document.createElement('div');em.className='empty';em.textContent='No transactions yet';c.appendChild(em);return;}
+  var running=b, list=document.createElement('div'); list.className='tx-list';
+  kidTx.forEach(function(t){
+    var tb=running; running-=t.amount;
+    var card=document.createElement('div'); card.className='tx-card';
+    var top=document.createElement('div'); top.className='tx-top';
+    var desc=document.createElement('div'); desc.className='tx-desc'; desc.textContent=t.desc;
+    var amt=document.createElement('div'); amt.className='tx-amt '+(t.amount>=0?'pos-t':'neg-t'); amt.textContent=fmt(t.amount);
+    top.appendChild(desc); top.appendChild(amt);
+    var bot=document.createElement('div'); bot.className='tx-bot';
+    var meta=document.createElement('div'); meta.className='tx-meta';
+    meta.innerHTML=fmtDate(t.date)+'<br>Added: '+fmtTS(t.createdAt);
+    var bald=document.createElement('div'); bald.className='tx-bal'; bald.textContent='Bal: '+fmt(tb);
+    bot.appendChild(meta); bot.appendChild(bald);
+    card.appendChild(top); card.appendChild(bot); list.appendChild(card);
+  });
+  c.appendChild(list);
+  var ts=document.createElement('div'); ts.className='status';
+  ts.textContent='Last updated: '+new Date().toLocaleTimeString(); c.appendChild(ts);
+}
+
+// Fetch live data from GitHub
+fetch(DATA_URL+'?t='+Date.now())
+  .then(function(r){return r.json();})
+  .then(function(data){render(data.transactions||[]);})
+  .catch(function(){
+    // Fallback: try localStorage
+    try{
+      var r=localStorage.getItem('bod_tx_v8');
+      if(r) render(JSON.parse(r));
+      else{document.getElementById('content').innerHTML='<div class="empty">No data available yet.</div>';}
+    }catch(e){document.getElementById('content').innerHTML='<div class="empty">Could not load data.</div>';}
+  });
+</script>
+</body>
+</html>
