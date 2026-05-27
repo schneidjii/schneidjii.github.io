@@ -875,10 +875,11 @@
     {
       "id": "s109",
       "kid": "Donald John",
-      "desc": "transaction",
+      "desc": "transaction ?",
       "amount": 25,
       "date": "2026-02-22",
-      "createdAt": "2021-01-01T00:00:00Z"
+      "createdAt": "2021-01-01T00:00:00Z",
+      "editedAt": "2026-05-27T22:54:23.244Z"
     },
     {
       "id": "s110",
@@ -2411,7 +2412,16 @@
       "amount": 1,
       "txDate": "2026-05-10",
       "extra": ""
+    },
+    {
+      "ts": "2026-05-27T22:54:23.244Z",
+      "action": "EDIT",
+      "kid": "Donald John",
+      "desc": "transaction ?",
+      "amount": 25,
+      "txDate": "2026-02-22",
+      "extra": "Was: \"transaction\" $25.00 on 2026-02-22"
     }
   ],
-  "savedAt": "2026-05-27T21:34:17.188Z"
+  "savedAt": "2026-05-27T22:54:23.245Z"
 }
