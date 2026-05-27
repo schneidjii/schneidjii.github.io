@@ -1,6 +1,6 @@
 {
   "name": "Bank of Dad",
-  "short_name": "Bank of Dad",
+  "short_name": "BOD",
   "description": "Schneider Family Bank",
   "start_url": "/bank_of_dad.html",
   "display": "standalone",
