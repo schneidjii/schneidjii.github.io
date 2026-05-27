@@ -2375,8 +2375,26 @@
       "amount": 0,
       "date": "2021-01-01",
       "createdAt": "2021-01-01T00:00:00Z"
+    },
+    {
+      "id": 1779889694888.9568,
+      "kid": "Kenleigh",
+      "desc": "Above & Beyond helping Mom clean",
+      "amount": 10,
+      "date": "2026-05-25",
+      "createdAt": "2026-05-27T13:48:14.888Z"
     }
   ],
-  "log": [],
-  "savedAt": "2026-05-27T13:45:30.244Z"
+  "log": [
+    {
+      "ts": "2026-05-27T13:48:14.888Z",
+      "action": "CREATE",
+      "kid": "Kenleigh",
+      "desc": "Above & Beyond helping Mom clean",
+      "amount": 10,
+      "txDate": "2026-05-25",
+      "extra": ""
+    }
+  ],
+  "savedAt": "2026-05-27T13:48:14.888Z"
 }
