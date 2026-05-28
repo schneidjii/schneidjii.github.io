@@ -2392,6 +2392,14 @@
       "amount": 1,
       "date": "2026-05-10",
       "createdAt": "2026-05-27T13:48:35.254Z"
+    },
+    {
+      "id": 1779927605232.5916,
+      "kid": "Donald John",
+      "desc": "VISA gift card transfer",
+      "amount": 50,
+      "date": "2026-05-28",
+      "createdAt": "2026-05-28T00:20:05.232Z"
     }
   ],
   "log": [
@@ -2430,7 +2438,16 @@
       "amount": 25,
       "txDate": "2026-02-22",
       "extra": "Was: \"transaction ?\" $25.00 on 2026-02-22"
+    },
+    {
+      "ts": "2026-05-28T00:20:05.232Z",
+      "action": "CREATE",
+      "kid": "Donald John",
+      "desc": "VISA gift card transfer",
+      "amount": 50,
+      "txDate": "2026-05-28",
+      "extra": ""
     }
   ],
-  "savedAt": "2026-05-28T00:19:06.045Z"
+  "savedAt": "2026-05-28T00:20:05.234Z"
 }
