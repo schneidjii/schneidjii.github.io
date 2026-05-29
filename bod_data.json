@@ -2424,6 +2424,14 @@
       "amount": -343,
       "date": "2026-05-29",
       "createdAt": "2026-05-29T21:15:27.141Z"
+    },
+    {
+      "id": 1780089390923.3416,
+      "kid": "Donald John",
+      "desc": "3.5 lawn mowes + edging",
+      "amount": 163,
+      "date": "2026-05-29",
+      "createdAt": "2026-05-29T21:16:30.923Z"
     }
   ],
   "log": [
@@ -2498,7 +2506,16 @@
       "amount": -343,
       "txDate": "2026-05-29",
       "extra": ""
+    },
+    {
+      "ts": "2026-05-29T21:16:30.923Z",
+      "action": "CREATE",
+      "kid": "Donald John",
+      "desc": "3.5 lawn mowes + edging",
+      "amount": 163,
+      "txDate": "2026-05-29",
+      "extra": ""
     }
   ],
-  "savedAt": "2026-05-29T21:15:27.147Z"
+  "savedAt": "2026-05-29T21:16:30.924Z"
 }
