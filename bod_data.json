@@ -2408,6 +2408,14 @@
       "amount": -0.01,
       "date": "2026-05-28",
       "createdAt": "2026-05-28T00:20:22.937Z"
+    },
+    {
+      "id": 1780088681327.5564,
+      "kid": "Donald John",
+      "desc": "Grammy & PawPaw Bday",
+      "amount": 50,
+      "date": "2026-05-29",
+      "createdAt": "2026-05-29T21:04:41.327Z"
     }
   ],
   "log": [
@@ -2464,7 +2472,16 @@
       "amount": -0.01,
       "txDate": "2026-05-28",
       "extra": ""
+    },
+    {
+      "ts": "2026-05-29T21:04:41.328Z",
+      "action": "CREATE",
+      "kid": "Donald John",
+      "desc": "Grammy & PawPaw Bday",
+      "amount": 50,
+      "txDate": "2026-05-29",
+      "extra": ""
     }
   ],
-  "savedAt": "2026-05-28T00:20:30.937Z"
+  "savedAt": "2026-05-29T21:04:41.330Z"
 }
