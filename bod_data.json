@@ -2432,6 +2432,14 @@
       "amount": 163,
       "date": "2026-05-29",
       "createdAt": "2026-05-29T21:16:30.923Z"
+    },
+    {
+      "id": 1780250550794.7703,
+      "kid": "Donald John",
+      "desc": "Washer Help",
+      "amount": 2.5,
+      "date": "2026-05-31",
+      "createdAt": "2026-05-31T18:02:30.794Z"
     }
   ],
   "log": [
@@ -2515,7 +2523,16 @@
       "amount": 163,
       "txDate": "2026-05-29",
       "extra": ""
+    },
+    {
+      "ts": "2026-05-31T18:02:30.795Z",
+      "action": "CREATE",
+      "kid": "Donald John",
+      "desc": "Washer Help",
+      "amount": 2.5,
+      "txDate": "2026-05-31",
+      "extra": ""
     }
   ],
-  "savedAt": "2026-05-29T21:16:30.924Z"
+  "savedAt": "2026-05-31T18:02:30.798Z"
 }
