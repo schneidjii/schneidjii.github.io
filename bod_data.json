@@ -2440,6 +2440,14 @@
       "amount": 2.5,
       "date": "2026-05-31",
       "createdAt": "2026-05-31T18:02:30.794Z"
+    },
+    {
+      "id": 1780250597453.1697,
+      "kid": "Gavin",
+      "desc": "Washer Help",
+      "amount": 2.5,
+      "date": "2026-05-31",
+      "createdAt": "2026-05-31T18:03:17.453Z"
     }
   ],
   "log": [
@@ -2532,7 +2540,16 @@
       "amount": 2.5,
       "txDate": "2026-05-31",
       "extra": ""
+    },
+    {
+      "ts": "2026-05-31T18:03:17.453Z",
+      "action": "CREATE",
+      "kid": "Gavin",
+      "desc": "Washer Help",
+      "amount": 2.5,
+      "txDate": "2026-05-31",
+      "extra": ""
     }
   ],
-  "savedAt": "2026-05-31T18:02:30.798Z"
+  "savedAt": "2026-05-31T18:03:17.455Z"
 }
