@@ -2448,6 +2448,14 @@
       "amount": 2.5,
       "date": "2026-05-31",
       "createdAt": "2026-05-31T18:03:17.453Z"
+    },
+    {
+      "id": 1780250606916.5583,
+      "kid": "Kenleigh",
+      "desc": "Washer Help",
+      "amount": 2.5,
+      "date": "2026-05-31",
+      "createdAt": "2026-05-31T18:03:26.916Z"
     }
   ],
   "log": [
@@ -2549,7 +2557,16 @@
       "amount": 2.5,
       "txDate": "2026-05-31",
       "extra": ""
+    },
+    {
+      "ts": "2026-05-31T18:03:26.916Z",
+      "action": "CREATE",
+      "kid": "Kenleigh",
+      "desc": "Washer Help",
+      "amount": 2.5,
+      "txDate": "2026-05-31",
+      "extra": ""
     }
   ],
-  "savedAt": "2026-05-31T18:03:17.455Z"
+  "savedAt": "2026-05-31T18:03:26.918Z"
 }
