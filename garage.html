@@ -4,6 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Schneider Farms — Garage</title>
+<link rel="manifest" href="garage-manifest.json">
+<meta name="theme-color" content="#7db855">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="SF Garage">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -23,61 +28,53 @@
   --font-body: 'DM Sans', sans-serif;
   --font-mono: 'DM Mono', monospace;
 }
+body.light {
+  --bg: #f4f5f0;
+  --surface: #ffffff;
+  --card: #f9faf6;
+  --border: #dde0d8;
+  --text: #1a1e18;
+  --muted: #7a8570;
+}
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: var(--bg); color: var(--text); font-family: var(--font-body); min-height: 100vh; }
+body { background: var(--bg); color: var(--text); font-family: var(--font-body); min-height: 100vh; transition: background 0.2s, color 0.2s; }
 
-/* HEADER */
 .app-header {
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  padding: 0 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 56px;
-  position: sticky;
-  top: 0;
-  z-index: 100;
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  padding: 0 20px; display: flex; align-items: center; justify-content: space-between;
+  height: 56px; position: sticky; top: 0; z-index: 100;
 }
 .app-logo { font-family: var(--font-head); font-size: 22px; letter-spacing: 2px; color: var(--accent); }
 .app-subtitle { font-size: 11px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
-.header-right { display: flex; align-items: center; gap: 12px; }
-.sync-btn {
+.header-right { display: flex; align-items: center; gap: 8px; }
+.header-btn {
   background: none; border: 1px solid var(--border); color: var(--muted);
   padding: 6px 12px; border-radius: 6px; font-family: var(--font-body); font-size: 12px;
   cursor: pointer; transition: all 0.2s;
 }
-.sync-btn:hover { border-color: var(--accent); color: var(--accent); }
-.sync-btn.syncing { color: var(--accent); border-color: var(--accent); animation: pulse 1s infinite; }
-@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+.header-btn:hover { border-color: var(--accent); color: var(--accent); }
+.header-btn.syncing { color: var(--accent); border-color: var(--accent); animation: pulse 1s infinite; }
+.theme-btn { padding: 6px 10px; font-size: 16px; }
+@keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.5} }
 
-/* TABS */
 .tab-bar {
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  padding: 0 20px;
-  gap: 4px;
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  display: flex; padding: 0 20px; gap: 4px; overflow-x: auto;
 }
 .tab-btn {
   background: none; border: none; color: var(--muted);
   padding: 12px 16px; font-family: var(--font-body); font-size: 13px; font-weight: 500;
   cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s;
-  letter-spacing: 0.5px;
+  white-space: nowrap;
 }
 .tab-btn:hover { color: var(--text); }
 .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
 
-/* MAIN */
 .tab-content { display: none; padding: 20px; max-width: 960px; margin: 0 auto; }
 .tab-content.active { display: block; }
 
-/* FLEET TAB */
-.fleet-header {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 20px;
-}
-.fleet-title { font-family: var(--font-head); font-size: 28px; letter-spacing: 1px; color: var(--text); }
+.fleet-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+.fleet-title { font-family: var(--font-head); font-size: 28px; letter-spacing: 1px; }
 .add-btn {
   background: var(--accent); border: none; color: #0f110e;
   padding: 8px 18px; border-radius: 6px; font-family: var(--font-body); font-size: 13px; font-weight: 600;
@@ -91,11 +88,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
   color: var(--muted); text-transform: uppercase; margin-bottom: 10px;
   padding-bottom: 6px; border-bottom: 1px solid var(--border);
 }
-.fleet-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 12px;
-}
+.fleet-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
 .vehicle-card {
   background: var(--card); border: 1px solid var(--border); border-radius: 10px;
   padding: 16px; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden;
@@ -103,7 +96,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
 .vehicle-card:hover { border-color: var(--accent); transform: translateY(-1px); }
 .vehicle-card::before {
   content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-  background: var(--card-accent, var(--border));
+  background: var(--border);
 }
 .vehicle-card.status-ok::before { background: var(--accent); }
 .vehicle-card.status-warn::before { background: var(--warn); }
@@ -111,6 +104,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
 
 .card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 10px; }
 .card-icon { font-size: 28px; line-height: 1; }
+.card-photo { width: 48px; height: 48px; border-radius: 6px; object-fit: cover; border: 1px solid var(--border); }
 .card-badges { display: flex; flex-direction: column; gap: 4px; align-items: flex-end; }
 .badge {
   font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 4px;
@@ -122,7 +116,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
 .badge-lease { background: rgba(125,184,85,0.1); color: var(--muted); border: 1px solid var(--border); }
 .badge-paid { background: transparent; color: var(--muted); font-size: 9px; }
 
-.card-name { font-family: var(--font-head); font-size: 18px; letter-spacing: 0.5px; color: var(--text); }
+.card-name { font-family: var(--font-head); font-size: 18px; letter-spacing: 0.5px; }
 .card-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
 .card-meta {
   display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 12px;
@@ -130,11 +124,11 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
 }
 .meta-item { display: flex; flex-direction: column; gap: 2px; }
 .meta-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
-.meta-value { font-size: 12px; color: var(--text); font-family: var(--font-mono); }
+.meta-value { font-size: 12px; font-family: var(--font-mono); }
 .meta-value.warn { color: var(--warn); }
 .meta-value.danger { color: var(--danger); }
 
-/* DETAIL MODAL */
+/* MODALS */
 .modal-overlay {
   display: none; position: fixed; inset: 0;
   background: rgba(0,0,0,0.8); z-index: 200;
@@ -144,10 +138,11 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
 .modal-overlay.open { display: flex; }
 .modal {
   background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
-  width: 100%; max-width: 620px; margin: auto;
+  width: 100%; max-width: 640px; margin: auto;
   animation: slideUp 0.2s ease;
 }
-@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.modal-sm { max-width: 480px; }
+@keyframes slideUp { from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1} }
 .modal-header {
   display: flex; align-items: center; justify-content: space-between;
   padding: 20px 24px; border-bottom: 1px solid var(--border);
@@ -180,7 +175,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
 .detail-field.full { grid-column: 1/-1; }
 .modal-actions {
   display: flex; gap: 10px; justify-content: flex-end;
-  padding: 16px 24px; border-top: 1px solid var(--border);
+  padding: 16px 24px; border-top: 1px solid var(--border); flex-wrap: wrap;
 }
 .btn-save {
   background: var(--accent); border: none; color: #0f110e;
@@ -199,7 +194,33 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
   padding: 9px 20px; border-radius: 6px; font-family: var(--font-body); font-size: 13px;
   cursor: pointer; transition: all 0.2s;
 }
-.btn-cancel:hover { border-color: var(--muted); color: var(--text); }
+.btn-cancel:hover { border-color: var(--muted); }
+.btn-secondary {
+  background: none; border: 1px solid var(--border); color: var(--muted);
+  padding: 9px 20px; border-radius: 6px; font-family: var(--font-body); font-size: 13px;
+  cursor: pointer; transition: all 0.2s;
+}
+.btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+/* CAMERA / OCR */
+.ocr-panel {
+  background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+  padding: 16px; margin-bottom: 16px;
+}
+.ocr-panel-title { font-size: 11px; font-weight: 600; letter-spacing: 1.5px; color: var(--muted); text-transform: uppercase; margin-bottom: 10px; }
+.ocr-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.ocr-btn {
+  background: none; border: 1px solid var(--border); color: var(--text);
+  padding: 8px 14px; border-radius: 6px; font-family: var(--font-body); font-size: 12px;
+  cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px;
+}
+.ocr-btn:hover { border-color: var(--accent); color: var(--accent); }
+.ocr-preview { margin-top: 10px; display: none; }
+.ocr-preview img { max-width: 100%; border-radius: 6px; border: 1px solid var(--border); max-height: 160px; object-fit: contain; }
+.ocr-result { margin-top: 8px; font-size: 12px; color: var(--muted); font-family: var(--font-mono); }
+.ocr-result.ok { color: var(--accent); }
+.ocr-result.err { color: var(--danger); }
+.ocr-spinner { display: none; margin-top: 8px; font-size: 12px; color: var(--muted); }
 
 /* MAINTENANCE TAB */
 .maint-filters { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
@@ -213,8 +234,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
   background: var(--card); border: 1px solid var(--border); border-radius: 8px;
   padding: 14px 16px; display: grid;
   grid-template-columns: 2fr 2fr 1fr 1fr auto;
-  align-items: center; gap: 12px;
-  transition: border-color 0.2s;
+  align-items: center; gap: 12px; transition: border-color 0.2s;
 }
 .maint-row:hover { border-color: var(--muted); }
 .maint-row.status-warn { border-left: 3px solid var(--warn); }
@@ -235,44 +255,83 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
 .summary-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
 .summary-card {
   background: var(--card); border: 1px solid var(--border); border-radius: 8px;
-  padding: 14px; text-align: center;
+  padding: 14px; text-align: center; cursor: pointer; transition: border-color 0.2s;
 }
-.summary-num { font-family: var(--font-head); font-size: 32px; color: var(--text); }
+.summary-card:hover { border-color: var(--accent); }
+.summary-num { font-family: var(--font-head); font-size: 32px; }
 .summary-num.warn { color: var(--warn); }
 .summary-num.danger { color: var(--danger); }
 .summary-num.ok { color: var(--accent); }
 .summary-lbl { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
 
+/* LOG MAINTENANCE MODAL */
+.log-field { margin-bottom: 14px; }
+.log-field label { display: block; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+.log-field input, .log-field select, .log-field textarea {
+  background: var(--bg); border: 1px solid var(--border); color: var(--text);
+  padding: 9px 12px; border-radius: 6px; font-family: var(--font-body); font-size: 13px;
+  width: 100%; transition: border-color 0.2s;
+}
+.log-field input:focus, .log-field select:focus, .log-field textarea:focus { outline: none; border-color: var(--accent); }
+.log-field textarea { resize: vertical; min-height: 70px; }
+
+/* NOTIFICATION PANEL */
+.notif-banner {
+  background: rgba(125,184,85,0.1); border: 1px solid rgba(125,184,85,0.3);
+  border-radius: 8px; padding: 12px 16px; margin-bottom: 16px;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+}
+.notif-banner.warn-banner { background: rgba(232,160,32,0.1); border-color: rgba(232,160,32,0.3); }
+.notif-text { font-size: 13px; }
+.notif-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.notif-enable-btn {
+  background: var(--accent); border: none; color: #0f110e;
+  padding: 7px 16px; border-radius: 6px; font-family: var(--font-body); font-size: 12px; font-weight: 600;
+  cursor: pointer; white-space: nowrap; transition: background 0.2s;
+}
+.notif-enable-btn:hover { background: var(--accent2); }
+
 /* SETTINGS TAB */
 .settings-section { margin-bottom: 28px; }
 .settings-title { font-family: var(--font-head); font-size: 20px; letter-spacing: 1px; margin-bottom: 14px; }
-.settings-card {
-  background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 20px;
-}
+.settings-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 20px; }
 .settings-field { margin-bottom: 14px; }
 .settings-field label { display: block; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
-.settings-field input {
+.settings-field input, .settings-field select {
   background: var(--bg); border: 1px solid var(--border); color: var(--text);
   padding: 9px 12px; border-radius: 6px; font-family: var(--font-mono); font-size: 13px;
   width: 100%; transition: border-color 0.2s;
 }
-.settings-field input:focus { outline: none; border-color: var(--accent); }
+.settings-field input:focus, .settings-field select:focus { outline: none; border-color: var(--accent); }
 .settings-note { font-size: 11px; color: var(--muted); margin-top: 4px; }
+.settings-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
 .settings-btn {
   background: var(--accent); border: none; color: #0f110e;
   padding: 9px 20px; border-radius: 6px; font-family: var(--font-body); font-size: 13px; font-weight: 600;
-  cursor: pointer; transition: background 0.2s; margin-top: 4px;
+  cursor: pointer; transition: background 0.2s;
 }
 .settings-btn:hover { background: var(--accent2); }
-.settings-btn.secondary {
+.settings-btn.sec {
   background: none; border: 1px solid var(--border); color: var(--muted);
 }
-.settings-btn.secondary:hover { border-color: var(--accent); color: var(--accent); background: none; }
+.settings-btn.sec:hover { border-color: var(--accent); color: var(--accent); background: none; }
 .status-msg { font-size: 12px; padding: 8px 12px; border-radius: 6px; margin-top: 10px; display: none; }
 .status-msg.ok { background: rgba(125,184,85,0.1); color: var(--accent); border: 1px solid rgba(125,184,85,0.3); }
 .status-msg.err { background: rgba(217,64,64,0.1); color: var(--danger); border: 1px solid rgba(217,64,64,0.3); }
+.theme-toggle-row { display: flex; align-items: center; gap: 12px; }
+.toggle-switch { position: relative; width: 44px; height: 24px; }
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
+.toggle-slider {
+  position: absolute; cursor: pointer; inset: 0;
+  background: var(--border); border-radius: 24px; transition: 0.2s;
+}
+.toggle-slider:before {
+  content: ''; position: absolute; height: 18px; width: 18px;
+  left: 3px; bottom: 3px; background: var(--muted); border-radius: 50%; transition: 0.2s;
+}
+.toggle-switch input:checked + .toggle-slider { background: var(--accent); }
+.toggle-switch input:checked + .toggle-slider:before { transform: translateX(20px); background: #0f110e; }
 
-/* TOAST */
 .toast {
   position: fixed; bottom: 24px; right: 24px; z-index: 300;
   background: var(--surface); border: 1px solid var(--accent); color: var(--text);
@@ -283,10 +342,21 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
 .empty-state { text-align: center; padding: 60px 20px; color: var(--muted); font-size: 14px; }
 .empty-icon { font-size: 48px; margin-bottom: 12px; }
 
+/* HISTORY ENTRY */
+.history-entry {
+  background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+  padding: 10px 12px; font-size: 12px; margin-bottom: 6px;
+}
+.history-entry-top { display: flex; justify-content: space-between; margin-bottom: 4px; }
+.history-type { font-weight: 600; }
+.history-date { color: var(--muted); font-family: var(--font-mono); }
+.history-notes { color: var(--muted); }
+.history-cost { color: var(--accent); margin-top: 2px; font-family: var(--font-mono); }
+
 @media (max-width: 600px) {
   .summary-cards { grid-template-columns: repeat(2, 1fr); }
   .maint-row { grid-template-columns: 1fr 1fr; }
-  .maint-last, .maint-log-btn { display: none; }
+  .maint-last { display: none; }
   .detail-grid { grid-template-columns: 1fr; }
 }
 </style>
@@ -299,7 +369,8 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
     <div class="app-subtitle">Garage Manager</div>
   </div>
   <div class="header-right">
-    <button class="sync-btn" id="syncBtn" onclick="syncToGitHub()">⇅ Sync</button>
+    <button class="header-btn theme-btn" id="themeBtn" onclick="toggleTheme()" title="Toggle light/dark">🌙</button>
+    <button class="header-btn" id="syncBtn" onclick="syncToGitHub()">⇅ Sync</button>
   </div>
 </div>
 
@@ -321,26 +392,60 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
 
 <!-- MAINTENANCE TAB -->
 <div class="tab-content" id="tab-maintenance">
+  <div id="notifBannerArea"></div>
   <div class="summary-cards" id="maintSummary"></div>
   <div class="maint-filters">
-    <button class="filter-chip active" onclick="filterMaint('all', this)">All</button>
-    <button class="filter-chip" onclick="filterMaint('due', this)">Overdue</button>
-    <button class="filter-chip" onclick="filterMaint('warn', this)">Due Soon</button>
-    <button class="filter-chip" onclick="filterMaint('ok', this)">Up to Date</button>
+    <button class="filter-chip active" onclick="filterMaint('all',this)">All</button>
+    <button class="filter-chip" onclick="filterMaint('due',this)">Overdue</button>
+    <button class="filter-chip" onclick="filterMaint('warn',this)">Due Soon</button>
+    <button class="filter-chip" onclick="filterMaint('ok',this)">Up to Date</button>
   </div>
   <div class="maint-list" id="maintList"></div>
 </div>
 
 <!-- FINANCIAL TAB -->
 <div class="tab-content" id="tab-financial">
-  <div class="fleet-header">
-    <div class="fleet-title">FINANCIAL</div>
-  </div>
+  <div class="fleet-header"><div class="fleet-title">FINANCIAL</div></div>
   <div id="financialContainer"></div>
 </div>
 
 <!-- SETTINGS TAB -->
 <div class="tab-content" id="tab-settings">
+  <div class="settings-section">
+    <div class="settings-title">APPEARANCE</div>
+    <div class="settings-card">
+      <div class="settings-field">
+        <label>Theme</label>
+        <div class="theme-toggle-row">
+          <span style="font-size:13px;color:var(--muted)">Dark</span>
+          <label class="toggle-switch">
+            <input type="checkbox" id="themeToggle" onchange="applyThemeFromToggle()">
+            <span class="toggle-slider"></span>
+          </label>
+          <span style="font-size:13px;color:var(--muted)">Light</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="settings-section">
+    <div class="settings-title">NOTIFICATIONS</div>
+    <div class="settings-card">
+      <div class="settings-field">
+        <label>Push Notifications</label>
+        <div style="font-size:13px;color:var(--muted);margin-bottom:10px;">Get reminded when inspections, registrations, or oil changes are coming due.</div>
+        <div id="notifStatus" style="font-size:13px;margin-bottom:10px;"></div>
+        <div class="settings-row">
+          <button class="settings-btn" onclick="requestNotifPermission()">Enable Notifications</button>
+          <button class="settings-btn sec" onclick="sendTestNotif()">Send Test</button>
+        </div>
+      </div>
+      <div class="settings-field">
+        <label>Remind me (days before due)</label>
+        <input type="number" id="notifDays" value="30" min="1" max="90" style="font-family:var(--font-body)">
+        <div class="settings-note">App checks for upcoming items each time it opens.</div>
+      </div>
+    </div>
+  </div>
   <div class="settings-section">
     <div class="settings-title">GITHUB SYNC</div>
     <div class="settings-card">
@@ -357,16 +462,21 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
         <label>Data File Path</label>
         <input type="text" id="pathInput" value="garage-data.json">
       </div>
-      <button class="settings-btn" onclick="saveSettings()">Save Settings</button>
-      <button class="settings-btn secondary" style="margin-left:8px" onclick="syncToGitHub()">Test & Sync Now</button>
+      <div class="settings-row">
+        <button class="settings-btn" onclick="saveSettings()">Save Settings</button>
+        <button class="settings-btn sec" onclick="syncToGitHub()">Test & Sync Now</button>
+        <button class="settings-btn sec" onclick="loadFromGitHub()">Load from GitHub</button>
+      </div>
       <div class="status-msg" id="settingsStatus"></div>
     </div>
   </div>
   <div class="settings-section">
     <div class="settings-title">DATA</div>
     <div class="settings-card">
-      <button class="settings-btn secondary" onclick="exportData()">Export JSON Backup</button>
-      <button class="settings-btn secondary" style="margin-left:8px" onclick="importData()">Import JSON</button>
+      <div class="settings-row">
+        <button class="settings-btn sec" onclick="exportData()">Export JSON Backup</button>
+        <button class="settings-btn sec" onclick="importData()">Import JSON</button>
+      </div>
       <input type="file" id="importFile" accept=".json" style="display:none" onchange="handleImport(event)">
     </div>
   </div>
@@ -376,7 +486,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal">
     <div class="modal-header">
-      <div class="modal-title" id="modalTitle">Vehicle Details</div>
+      <div class="modal-title" id="modalTitle">Details</div>
       <button class="modal-close" onclick="closeModal()">✕</button>
     </div>
     <div class="modal-body" id="modalBody"></div>
@@ -388,193 +498,134 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
   </div>
 </div>
 
+<!-- LOG MAINTENANCE MODAL -->
+<div class="modal-overlay" id="logModalOverlay">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <div class="modal-title">Log Service</div>
+      <button class="modal-close" onclick="closeLogModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="font-size:12px;color:var(--muted);margin-bottom:16px;" id="logModalSubtitle"></div>
+      <div class="log-field">
+        <label>Service Type</label>
+        <select id="log_type">
+          <option>Oil Change</option>
+          <option>Filter Replacement</option>
+          <option>Fluid Check / Top-off</option>
+          <option>Tire Rotation</option>
+          <option>Inspection Passed</option>
+          <option>Registration Renewed</option>
+          <option>Belt / Blade Replacement</option>
+          <option>Hydraulic Service</option>
+          <option>Grease / Lubrication</option>
+          <option>Battery Service</option>
+          <option>Full Service</option>
+          <option>Repair</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="log-field">
+        <label>Date</label>
+        <input type="date" id="log_date">
+      </div>
+      <div class="log-field">
+        <label>Mileage / Hours at Service</label>
+        <input type="text" id="log_miles" placeholder="e.g. 45230 or 348 hrs">
+      </div>
+      <div class="log-field">
+        <label>Cost ($)</label>
+        <input type="number" id="log_cost" step="0.01" placeholder="0.00">
+      </div>
+      <div class="log-field">
+        <label>Next Due (Miles / Hours / Date)</label>
+        <input type="text" id="log_next" placeholder="e.g. 50230 or Dec 2026">
+      </div>
+      <div class="log-field">
+        <label>Notes</label>
+        <textarea id="log_notes" placeholder="Parts used, shop name, observations..."></textarea>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeLogModal()">Cancel</button>
+      <button class="btn-save" onclick="saveLogEntry()">Save Entry</button>
+    </div>
+  </div>
+</div>
+
+<!-- OCR MODAL -->
+<div class="modal-overlay" id="ocrModalOverlay">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <div class="modal-title" id="ocrModalTitle">Scan with Camera</div>
+      <button class="modal-close" onclick="closeOcrModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="font-size:13px;color:var(--muted);margin-bottom:16px;" id="ocrInstructions">Take a clear photo of the license plate or inspection sticker.</div>
+      <input type="file" id="ocrFileInput" accept="image/*" capture="environment" style="display:none" onchange="handleOcrImage(event)">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn-secondary" onclick="document.getElementById('ocrFileInput').click()">📷 Take Photo</button>
+        <button class="btn-secondary" onclick="triggerOcrGallery()">🖼️ Choose from Gallery</button>
+      </div>
+      <div class="ocr-preview" id="ocrPreview">
+        <img id="ocrPreviewImg" src="" alt="Preview">
+      </div>
+      <div class="ocr-spinner" id="ocrSpinner">🔍 Reading image with AI...</div>
+      <div class="ocr-result" id="ocrResult"></div>
+      <div id="ocrFields" style="margin-top:12px;display:none;">
+        <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Detected — confirm before applying:</div>
+        <div id="ocrFieldList" style="display:flex;flex-direction:column;gap:6px;"></div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeOcrModal()">Cancel</button>
+      <button class="btn-save" id="ocrApplyBtn" onclick="applyOcrResults()" style="display:none">Apply to Record</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
-const CATEGORY_ICONS = {
-  automobile: '🚗', truck: '🛻', van: '🚐', suv: '🚙', ev: '⚡',
-  tractor: '🚜', mower: '🌿', skidsteer: '🏗️', atv: '🏍️', gokart: '🏎️',
-  implement: '⚙️', splitter: '🪵', planter: '🌱', loader: '🦾', other: '🔧'
+var CATEGORY_ICONS = {
+  automobile:'🚗',truck:'🛻',van:'🚐',suv:'🚙',ev:'⚡',
+  tractor:'🚜',mower:'🌿',skidsteer:'🏗️',atv:'🏍️',gokart:'🏎️',
+  implement:'⚙️',splitter:'🪵',planter:'🌱',loader:'🦾',other:'🔧'
 };
 
-const DEFAULT_DATA = {
+var DEFAULT_DATA = {
   vehicles: [
-    {
-      id: 'v1', name: 'Ford Transit Conversion Van', category: 'van',
-      year: '2019', make: 'Ford', model: 'Transit', trim: 'Conversion',
-      vin: '', plate: '', inspMonth: '', inspYear: '', regMonth: '', regYear: '',
-      mileage: '', oilLastDate: '', oilLastMiles: '', oilNextMiles: '',
-      notes: 'Paid off', financialStatus: 'paid',
-      purchasePrice: '', monthlyPayment: '', payoffDate: '', balance: '',
-      manualUrl: '', photo: '',
-      maintenance: []
-    },
-    {
-      id: 'v2', name: 'Hummer EV', category: 'ev',
-      year: '2024', make: 'GMC', model: 'Hummer EV', trim: '',
-      vin: '', plate: '', inspMonth: '', inspYear: '', regMonth: '', regYear: '',
-      mileage: '', oilLastDate: '', oilLastMiles: '', oilNextMiles: '',
-      notes: 'Lease', financialStatus: 'lease',
-      purchasePrice: '', monthlyPayment: '', payoffDate: '', balance: '',
-      manualUrl: '', photo: '',
-      maintenance: []
-    },
-    {
-      id: 'v3', name: 'Tesla Model S 90D', category: 'ev',
-      year: '2016', make: 'Tesla', model: 'Model S', trim: '90D',
-      vin: '', plate: '', inspMonth: '', inspYear: '', regMonth: '', regYear: '',
-      mileage: '', oilLastDate: '', oilLastMiles: '', oilNextMiles: '',
-      notes: 'Paid off', financialStatus: 'paid',
-      purchasePrice: '', monthlyPayment: '', payoffDate: '', balance: '',
-      manualUrl: '', photo: '',
-      maintenance: []
-    },
-    {
-      id: 'v4', name: 'GMC Sierra 2500 HD Denali', category: 'truck',
-      year: '2015', make: 'GMC', model: 'Sierra 2500 HD', trim: 'Denali',
-      vin: '', plate: '', inspMonth: '', inspYear: '', regMonth: '', regYear: '',
-      mileage: '', oilLastDate: '', oilLastMiles: '', oilNextMiles: '',
-      notes: 'Paid off', financialStatus: 'paid',
-      purchasePrice: '', monthlyPayment: '', payoffDate: '', balance: '',
-      manualUrl: '', photo: '',
-      maintenance: []
-    },
-    {
-      id: 'v5', name: 'Mercedes GL 450', category: 'suv',
-      year: '2011', make: 'Mercedes-Benz', model: 'GL 450', trim: '',
-      vin: '', plate: '', inspMonth: '', inspYear: '', regMonth: '', regYear: '',
-      mileage: '', oilLastDate: '', oilLastMiles: '', oilNextMiles: '',
-      notes: 'Paid off', financialStatus: 'paid',
-      purchasePrice: '', monthlyPayment: '', payoffDate: '', balance: '',
-      manualUrl: '', photo: '',
-      maintenance: []
-    },
-    {
-      id: 'e1', name: 'Johny Five', category: 'tractor',
-      year: '2022', make: 'John Deere', model: '5075E', trim: '',
-      serial: '1PY5075EEMM415211',
-      vin: '', plate: '', inspMonth: '', inspYear: '', regMonth: '', regYear: '',
-      mileage: '', hours: '', oilLastDate: '', oilLastMiles: '', oilNextMiles: '',
-      notes: '75hp utility tractor. Pairs with 520M loader and implements.',
-      financialStatus: 'paid',
-      purchasePrice: '', monthlyPayment: '', payoffDate: '', balance: '',
-      manualUrl: '', photo: '',
-      maintenance: []
-    },
-    {
-      id: 'e2', name: 'Zero Turn', category: 'mower',
-      year: '', make: 'John Deere', model: 'Z950M', trim: '',
-      serial: '1TC950MDTNT120374',
-      vin: '', plate: '', inspMonth: '', inspYear: '', regMonth: '', regYear: '',
-      mileage: '', hours: '', oilLastDate: '', oilLastMiles: '', oilNextMiles: '',
-      notes: 'Zero turn mower.',
-      financialStatus: 'paid',
-      purchasePrice: '', monthlyPayment: '', payoffDate: '', balance: '',
-      manualUrl: '', photo: '',
-      maintenance: []
-    },
-    {
-      id: 'e3', name: 'JD Riding Mower', category: 'mower',
-      year: '', make: 'John Deere', model: 'S170', trim: '',
-      serial: '',
-      vin: '', plate: '', inspMonth: '', inspYear: '', regMonth: '', regYear: '',
-      mileage: '', hours: '', oilLastDate: '', oilLastMiles: '', oilNextMiles: '',
-      notes: 'Lawn tractor.',
-      financialStatus: 'paid',
-      purchasePrice: '', monthlyPayment: '', payoffDate: '', balance: '',
-      manualUrl: '', photo: '',
-      maintenance: []
-    },
-    {
-      id: 'e4', name: '333D Skid Steer', category: 'skidsteer',
-      year: '2011', make: 'John Deere', model: '333D', trim: 'High Flow',
-      serial: 'T0333DM181240',
-      vin: '', plate: '', inspMonth: '', inspYear: '', regMonth: '', regYear: '',
-      mileage: '', hours: '3547', oilLastDate: '2025-12-23', oilLastMiles: '3547', oilNextMiles: '3747',
-      notes: 'Last full service 12/23/25 at James River Equipment - Wakefield (Invoice W21214). All fluids & filters changed, greased all fittings. Engine derate (cam gear timing issue) - repair declined. Gate code: 1880.',
-      financialStatus: 'paid',
-      purchasePrice: '', monthlyPayment: '', payoffDate: '', balance: '',
-      manualUrl: '',
-      photo: '',
-      maintenance: [
-        { id: 'm1', type: 'Full Service - All Fluids & Filters', date: '2025-12-23', hours: '3547', cost: '2592.55', notes: 'James River Equipment W21214. Oil, hydraulic, fuel, coolant, air filters all replaced. Greased all fittings.' },
-        { id: 'm2', type: 'Cab Repair - Gas Strut & Hold-down', date: '2025-12-23', hours: '3547', cost: '', notes: 'New gas strut for cab door, cab hold-down hardware replaced.' },
-        { id: 'm3', type: 'Windshield Washer Reservoir Replaced', date: '2025-12-23', hours: '3547', cost: '', notes: 'Cracked reservoir replaced (AT418243).' }
-      ]
-    },
-    {
-      id: 'e5', name: '520M Front End Loader', category: 'loader',
-      year: '', make: 'John Deere', model: '520M', trim: '',
-      serial: '1P0520MXJMD072401',
-      notes: 'Paired with 5075E tractor (Johny Five).',
-      financialStatus: 'paid',
-      purchasePrice: '', monthlyPayment: '', payoffDate: '', balance: '',
-      manualUrl: '', photo: '',
-      maintenance: []
-    },
-    {
-      id: 'e6', name: 'Bush Hog MX6 Rotary Cutter', category: 'implement',
-      year: '', make: 'Bush Hog', model: 'MX6', trim: '',
-      serial: '1P00MX6CPKP075914',
-      notes: 'Rotary cutter / bush hog. PTO driven.',
-      financialStatus: 'paid',
-      purchasePrice: '', monthlyPayment: '', payoffDate: '', balance: '',
-      manualUrl: '', photo: '',
-      maintenance: []
-    },
-    {
-      id: 'e7', name: 'Bush Hog Box Blade', category: 'implement',
-      year: '', make: 'Bush Hog', model: 'MBX-84', trim: '',
-      serial: '',
-      notes: 'Box blade. 84 inch.',
-      financialStatus: 'paid',
-      purchasePrice: '', monthlyPayment: '', payoffDate: '', balance: '',
-      manualUrl: '', photo: '',
-      maintenance: []
-    },
-    {
-      id: 'e8', name: 'AP12F Pallet Forks', category: 'implement',
-      year: '', make: 'John Deere', model: 'AP12F', trim: '',
-      serial: '1XFAP12FVN0076174',
-      notes: 'Pallet forks for 520M loader.',
-      financialStatus: 'paid',
-      purchasePrice: '', monthlyPayment: '', payoffDate: '', balance: '',
-      manualUrl: '', photo: '',
-      maintenance: []
-    },
-    {
-      id: 'e9', name: '1710 MaxEmerge No-Till Planter', category: 'planter',
-      year: '2023', make: 'John Deere', model: '1710 MaxEmerge', trim: '3-row',
-      serial: '',
-      notes: 'Custom refurbished by builder in Michigan. Vintage JD 1710 frame cut down to 3-row and brought to current specs ~2022-23. No standard JD maintenance schedule - track row unit bearings, seed disc blades, closing wheels, down-pressure springs by season.',
-      financialStatus: 'paid',
-      purchasePrice: '', monthlyPayment: '', payoffDate: '', balance: '',
-      manualUrl: '', photo: '',
-      maintenance: []
-    },
-    {
-      id: 'e10', name: 'RuggedSplit 737 Log Splitter', category: 'splitter',
-      year: '2024', make: 'RuggedMade', model: 'RS-737-30-HE', trim: '37-ton',
-      serial: '',
-      notes: 'Honda GX390 389cc engine w/ electric start. Log lift included. Purchased Nov 2024. Hydraulic fluid: AW32 or AW46, 12-gal tank. Engine oil: SAE 5W-30 synthetic.',
-      financialStatus: 'paid',
-      purchasePrice: '4852.60', monthlyPayment: '', payoffDate: '', balance: '',
-      manualUrl: '', photo: '',
-      maintenance: [
-        { id: 'm4', type: 'Engine Oil Break-in Change', date: '', hours: '5', cost: '', notes: 'Change after first 5 hours per manufacturer. Use conventional or synthetic.' }
-      ]
-    }
+    { id:'v1',name:'Ford Transit Conversion Van',category:'van',year:'2019',make:'Ford',model:'Transit',trim:'Conversion',serial:'',vin:'',plate:'',inspMonth:'',inspYear:'',regMonth:'',regYear:'',mileage:'',hours:'',oilLastDate:'',oilLastMiles:'',oilNextMiles:'',notes:'Paid off',financialStatus:'paid',purchasePrice:'',monthlyPayment:'',payoffDate:'',balance:'',manualUrl:'',photo:'',maintenance:[] },
+    { id:'v2',name:'Hummer EV',category:'ev',year:'2024',make:'GMC',model:'Hummer EV',trim:'',serial:'',vin:'',plate:'',inspMonth:'',inspYear:'',regMonth:'',regYear:'',mileage:'',hours:'',oilLastDate:'',oilLastMiles:'',oilNextMiles:'',notes:'Lease',financialStatus:'lease',purchasePrice:'',monthlyPayment:'',payoffDate:'',balance:'',manualUrl:'',photo:'',maintenance:[] },
+    { id:'v3',name:'Tesla Model S 90D',category:'ev',year:'2016',make:'Tesla',model:'Model S',trim:'90D',serial:'',vin:'',plate:'',inspMonth:'',inspYear:'',regMonth:'',regYear:'',mileage:'',hours:'',oilLastDate:'',oilLastMiles:'',oilNextMiles:'',notes:'Paid off',financialStatus:'paid',purchasePrice:'',monthlyPayment:'',payoffDate:'',balance:'',manualUrl:'',photo:'',maintenance:[] },
+    { id:'v4',name:'GMC Sierra 2500 HD Denali',category:'truck',year:'2015',make:'GMC',model:'Sierra 2500 HD',trim:'Denali',serial:'',vin:'',plate:'',inspMonth:'',inspYear:'',regMonth:'',regYear:'',mileage:'',hours:'',oilLastDate:'',oilLastMiles:'',oilNextMiles:'',notes:'Paid off',financialStatus:'paid',purchasePrice:'',monthlyPayment:'',payoffDate:'',balance:'',manualUrl:'',photo:'',maintenance:[] },
+    { id:'v5',name:'Mercedes GL 450',category:'suv',year:'2011',make:'Mercedes-Benz',model:'GL 450',trim:'',serial:'',vin:'',plate:'',inspMonth:'',inspYear:'',regMonth:'',regYear:'',mileage:'',hours:'',oilLastDate:'',oilLastMiles:'',oilNextMiles:'',notes:'Paid off',financialStatus:'paid',purchasePrice:'',monthlyPayment:'',payoffDate:'',balance:'',manualUrl:'',photo:'',maintenance:[] },
+    { id:'e1',name:'Johny Five',category:'tractor',year:'2022',make:'John Deere',model:'5075E',trim:'',serial:'1PY5075EEMM415211',vin:'',plate:'',inspMonth:'',inspYear:'',regMonth:'',regYear:'',mileage:'',hours:'',oilLastDate:'',oilLastMiles:'',oilNextMiles:'',notes:'75hp utility tractor. Pairs with 520M loader and implements.',financialStatus:'paid',purchasePrice:'',monthlyPayment:'',payoffDate:'',balance:'',manualUrl:'',photo:'',maintenance:[] },
+    { id:'e2',name:'Zero Turn',category:'mower',year:'',make:'John Deere',model:'Z950M',trim:'',serial:'1TC950MDTNT120374',vin:'',plate:'',inspMonth:'',inspYear:'',regMonth:'',regYear:'',mileage:'',hours:'',oilLastDate:'',oilLastMiles:'',oilNextMiles:'',notes:'Zero turn mower.',financialStatus:'paid',purchasePrice:'',monthlyPayment:'',payoffDate:'',balance:'',manualUrl:'',photo:'',maintenance:[] },
+    { id:'e3',name:'JD Riding Mower',category:'mower',year:'',make:'John Deere',model:'S170',trim:'',serial:'',vin:'',plate:'',inspMonth:'',inspYear:'',regMonth:'',regYear:'',mileage:'',hours:'',oilLastDate:'',oilLastMiles:'',oilNextMiles:'',notes:'Lawn tractor.',financialStatus:'paid',purchasePrice:'',monthlyPayment:'',payoffDate:'',balance:'',manualUrl:'',photo:'',maintenance:[] },
+    { id:'e4',name:'333D Skid Steer',category:'skidsteer',year:'2011',make:'John Deere',model:'333D',trim:'High Flow',serial:'T0333DM181240',vin:'',plate:'',inspMonth:'',inspYear:'',regMonth:'',regYear:'',mileage:'',hours:'3547',oilLastDate:'2025-12-23',oilLastMiles:'3547',oilNextMiles:'3747',notes:'Last full service 12/23/25 at James River Equipment - Wakefield (Invoice W21214). All fluids & filters changed, greased all fittings. Engine derate (cam gear timing issue) - repair declined. Gate code: 1880.',financialStatus:'paid',purchasePrice:'',monthlyPayment:'',payoffDate:'',balance:'',manualUrl:'',photo:'',maintenance:[{id:'m1',type:'Full Service - All Fluids & Filters',date:'2025-12-23',hours:'3547',cost:'2592.55',notes:'James River Equipment W21214. Oil, hydraulic, fuel, coolant, air filters all replaced. Greased all fittings.'},{id:'m2',type:'Cab Repair - Gas Strut & Hold-down',date:'2025-12-23',hours:'3547',cost:'',notes:'New gas strut for cab door, cab hold-down hardware replaced.'},{id:'m3',type:'Windshield Washer Reservoir Replaced',date:'2025-12-23',hours:'3547',cost:'',notes:'Cracked reservoir replaced (AT418243).'}] },
+    { id:'e5',name:'520M Front End Loader',category:'loader',year:'',make:'John Deere',model:'520M',trim:'',serial:'1P0520MXJMD072401',vin:'',plate:'',inspMonth:'',inspYear:'',regMonth:'',regYear:'',mileage:'',hours:'',oilLastDate:'',oilLastMiles:'',oilNextMiles:'',notes:'Paired with 5075E tractor (Johny Five).',financialStatus:'paid',purchasePrice:'',monthlyPayment:'',payoffDate:'',balance:'',manualUrl:'',photo:'',maintenance:[] },
+    { id:'e6',name:'Bush Hog MX6 Rotary Cutter',category:'implement',year:'',make:'Bush Hog',model:'MX6',trim:'',serial:'1P00MX6CPKP075914',vin:'',plate:'',inspMonth:'',inspYear:'',regMonth:'',regYear:'',mileage:'',hours:'',oilLastDate:'',oilLastMiles:'',oilNextMiles:'',notes:'Rotary cutter / bush hog. PTO driven.',financialStatus:'paid',purchasePrice:'',monthlyPayment:'',payoffDate:'',balance:'',manualUrl:'',photo:'',maintenance:[] },
+    { id:'e7',name:'Bush Hog Box Blade',category:'implement',year:'',make:'Bush Hog',model:'MBX-84',trim:'',serial:'',vin:'',plate:'',inspMonth:'',inspYear:'',regMonth:'',regYear:'',mileage:'',hours:'',oilLastDate:'',oilLastMiles:'',oilNextMiles:'',notes:'Box blade. 84 inch.',financialStatus:'paid',purchasePrice:'',monthlyPayment:'',payoffDate:'',balance:'',manualUrl:'',photo:'',maintenance:[] },
+    { id:'e8',name:'AP12F Pallet Forks',category:'implement',year:'',make:'John Deere',model:'AP12F',trim:'',serial:'1XFAP12FVN0076174',vin:'',plate:'',inspMonth:'',inspYear:'',regMonth:'',regYear:'',mileage:'',hours:'',oilLastDate:'',oilLastMiles:'',oilNextMiles:'',notes:'Pallet forks for 520M loader.',financialStatus:'paid',purchasePrice:'',monthlyPayment:'',payoffDate:'',balance:'',manualUrl:'',photo:'',maintenance:[] },
+    { id:'e9',name:'1710 MaxEmerge No-Till Planter',category:'planter',year:'2023',make:'John Deere',model:'1710 MaxEmerge',trim:'3-row',serial:'',vin:'',plate:'',inspMonth:'',inspYear:'',regMonth:'',regYear:'',mileage:'',hours:'',oilLastDate:'',oilLastMiles:'',oilNextMiles:'',notes:'Custom refurbished by builder in Michigan. Vintage JD 1710 frame cut down to 3-row, updated to current specs ~2022-23. Track row unit bearings, seed disc blades, closing wheels, down-pressure springs by season.',financialStatus:'paid',purchasePrice:'',monthlyPayment:'',payoffDate:'',balance:'',manualUrl:'',photo:'',maintenance:[] },
+    { id:'e10',name:'RuggedSplit 737 Log Splitter',category:'splitter',year:'2024',make:'RuggedMade',model:'RS-737-30-HE',trim:'37-ton',serial:'',vin:'',plate:'',inspMonth:'',inspYear:'',regMonth:'',regYear:'',mileage:'',hours:'',oilLastDate:'',oilLastMiles:'',oilNextMiles:'',notes:'Honda GX390 389cc engine w/ electric start. Log lift included. Purchased Nov 2024. Hydraulic: AW32 or AW46, 12-gal tank. Engine oil: SAE 5W-30 synthetic. Engine oil every 25 hrs. Hydraulic fluid/filter every 200 hrs or annually.',financialStatus:'paid',purchasePrice:'4852.60',monthlyPayment:'',payoffDate:'',balance:'',manualUrl:'',photo:'',maintenance:[{id:'m4',type:'Engine Oil Break-in Change',date:'',hours:'5',cost:'',notes:'Change after first 5 hours per manufacturer.'}] }
   ]
 };
 
-let appData = null;
-let currentItemId = null;
-let maintFilter = 'all';
+var appData = null;
+var currentItemId = null;
+var maintFilter = 'all';
+var logItemId = null;
+var ocrItemId = null;
+var ocrMode = null;
+var pendingOcrData = null;
 
 function loadData() {
-  const stored = localStorage.getItem('garageData');
+  var stored = localStorage.getItem('garageData');
   if (stored) {
-    try { appData = JSON.parse(stored); } catch(e) { appData = JSON.parse(JSON.stringify(DEFAULT_DATA)); }
+    try { appData = JSON.parse(stored); }
+    catch(e) { appData = JSON.parse(JSON.stringify(DEFAULT_DATA)); }
   } else {
     appData = JSON.parse(JSON.stringify(DEFAULT_DATA));
   }
@@ -589,8 +640,7 @@ function showTab(tab) {
   document.querySelectorAll('.tab-btn').forEach(function(el) { el.classList.remove('active'); });
   var content = document.getElementById('tab-' + tab);
   if (content) content.classList.add('active');
-  var btns = document.querySelectorAll('.tab-btn');
-  btns.forEach(function(btn) {
+  document.querySelectorAll('.tab-btn').forEach(function(btn) {
     if (btn.getAttribute('onclick') === "showTab('" + tab + "')") btn.classList.add('active');
   });
   if (tab === 'fleet') renderFleet();
@@ -604,23 +654,21 @@ function getStatus(item) {
   var month = now.getMonth() + 1;
   var year = now.getFullYear();
   if (item.inspMonth && item.inspYear) {
-    var inspY = parseInt(item.inspYear);
-    var inspM = parseInt(item.inspMonth);
-    if (inspY < year || (inspY === year && inspM < month)) return 'due';
-    if (inspY === year && inspM <= month + 2) return 'warn';
+    var iy = parseInt(item.inspYear), im = parseInt(item.inspMonth);
+    if (iy < year || (iy === year && im < month)) return 'due';
+    if (iy === year && im <= month + 2) return 'warn';
   }
   if (item.regMonth && item.regYear) {
-    var regY = parseInt(item.regYear);
-    var regM = parseInt(item.regMonth);
-    if (regY < year || (regY === year && regM < month)) return 'due';
-    if (regY === year && regM <= month + 2) return 'warn';
+    var ry = parseInt(item.regYear), rm = parseInt(item.regMonth);
+    if (ry < year || (ry === year && rm < month)) return 'due';
+    if (ry === year && rm <= month + 2) return 'warn';
   }
   if (item.oilNextMiles && item.mileage) {
     var diff = parseInt(item.oilNextMiles) - parseInt(item.mileage);
     if (diff < 0) return 'due';
     if (diff < 500) return 'warn';
   }
-  if (item.hours && item.oilNextMiles) {
+  if (item.oilNextMiles && item.hours && !item.mileage) {
     var hdiff = parseInt(item.oilNextMiles) - parseInt(item.hours);
     if (hdiff < 0) return 'due';
     if (hdiff < 25) return 'warn';
@@ -629,21 +677,13 @@ function getStatus(item) {
 }
 
 function groupByCategory(vehicles) {
-  var groups = {
-    'Automobiles & Trucks': [],
-    'Tractors & Heavy Equipment': [],
-    'Mowers': [],
-    'Implements & Attachments': [],
-    'Other Equipment': []
-  };
+  var groups = { 'Automobiles & Trucks':[], 'Tractors & Heavy Equipment':[], 'Mowers':[], 'Implements & Attachments':[], 'Other Equipment':[] };
   var catMap = {
-    automobile: 'Automobiles & Trucks', truck: 'Automobiles & Trucks',
-    van: 'Automobiles & Trucks', suv: 'Automobiles & Trucks', ev: 'Automobiles & Trucks',
-    tractor: 'Tractors & Heavy Equipment', skidsteer: 'Tractors & Heavy Equipment',
-    loader: 'Tractors & Heavy Equipment',
-    mower: 'Mowers',
-    implement: 'Implements & Attachments', planter: 'Implements & Attachments',
-    splitter: 'Other Equipment', atv: 'Other Equipment', gokart: 'Other Equipment', other: 'Other Equipment'
+    automobile:'Automobiles & Trucks',truck:'Automobiles & Trucks',van:'Automobiles & Trucks',suv:'Automobiles & Trucks',ev:'Automobiles & Trucks',
+    tractor:'Tractors & Heavy Equipment',skidsteer:'Tractors & Heavy Equipment',loader:'Tractors & Heavy Equipment',
+    mower:'Mowers',
+    implement:'Implements & Attachments',planter:'Implements & Attachments',
+    splitter:'Other Equipment',atv:'Other Equipment',gokart:'Other Equipment',other:'Other Equipment'
   };
   vehicles.forEach(function(v) {
     var g = catMap[v.category] || 'Other Equipment';
@@ -658,7 +698,7 @@ function renderFleet() {
   var groups = groupByCategory(appData.vehicles);
   Object.keys(groups).forEach(function(groupName) {
     var items = groups[groupName];
-    if (items.length === 0) return;
+    if (!items.length) return;
     var section = document.createElement('div');
     section.className = 'category-section';
     var label = document.createElement('div');
@@ -667,9 +707,7 @@ function renderFleet() {
     section.appendChild(label);
     var grid = document.createElement('div');
     grid.className = 'fleet-grid';
-    items.forEach(function(item) {
-      grid.appendChild(makeCard(item));
-    });
+    items.forEach(function(item) { grid.appendChild(makeCard(item)); });
     section.appendChild(grid);
     container.appendChild(section);
   });
@@ -681,85 +719,63 @@ function makeCard(item) {
   card.className = 'vehicle-card status-' + status;
   card.addEventListener('click', function() { openEditModal(item.id); });
 
-  var icon = CATEGORY_ICONS[item.category] || '🔧';
   var topDiv = document.createElement('div');
   topDiv.className = 'card-top';
 
-  var iconDiv = document.createElement('div');
-  iconDiv.className = 'card-icon';
-  iconDiv.textContent = icon;
+  var iconEl;
+  if (item.photo) {
+    iconEl = document.createElement('img');
+    iconEl.className = 'card-photo';
+    iconEl.src = item.photo;
+    iconEl.alt = item.name;
+  } else {
+    iconEl = document.createElement('div');
+    iconEl.className = 'card-icon';
+    iconEl.textContent = CATEGORY_ICONS[item.category] || '🔧';
+  }
 
   var badgesDiv = document.createElement('div');
   badgesDiv.className = 'card-badges';
-
-  var statusBadge = document.createElement('span');
-  statusBadge.className = 'badge badge-' + status;
-  statusBadge.textContent = status === 'ok' ? 'OK' : status === 'warn' ? 'Due Soon' : 'Overdue';
-  badgesDiv.appendChild(statusBadge);
-
+  var sb = document.createElement('span');
+  sb.className = 'badge badge-' + status;
+  sb.textContent = status === 'ok' ? 'OK' : status === 'warn' ? 'Due Soon' : 'Overdue';
+  badgesDiv.appendChild(sb);
   if (item.financialStatus === 'lease') {
-    var lb = document.createElement('span');
-    lb.className = 'badge badge-lease';
-    lb.textContent = 'Lease';
-    badgesDiv.appendChild(lb);
+    var lb = document.createElement('span'); lb.className = 'badge badge-lease'; lb.textContent = 'Lease'; badgesDiv.appendChild(lb);
   } else if (item.financialStatus === 'paid') {
-    var pb = document.createElement('span');
-    pb.className = 'badge badge-paid';
-    pb.textContent = 'Paid off';
-    badgesDiv.appendChild(pb);
+    var pb = document.createElement('span'); pb.className = 'badge badge-paid'; pb.textContent = 'Paid off'; badgesDiv.appendChild(pb);
   }
 
-  topDiv.appendChild(iconDiv);
+  topDiv.appendChild(iconEl);
   topDiv.appendChild(badgesDiv);
 
-  var nameDiv = document.createElement('div');
-  nameDiv.className = 'card-name';
-  nameDiv.textContent = item.name;
+  var nameDiv = document.createElement('div'); nameDiv.className = 'card-name'; nameDiv.textContent = item.name;
+  var subDiv = document.createElement('div'); subDiv.className = 'card-sub';
+  var sp = []; if (item.year) sp.push(item.year); if (item.make) sp.push(item.make); if (item.model) sp.push(item.model);
+  subDiv.textContent = sp.join(' ');
 
-  var subDiv = document.createElement('div');
-  subDiv.className = 'card-sub';
-  var subParts = [];
-  if (item.year) subParts.push(item.year);
-  if (item.make) subParts.push(item.make);
-  if (item.model) subParts.push(item.model);
-  subDiv.textContent = subParts.join(' ');
-
-  var metaDiv = document.createElement('div');
-  metaDiv.className = 'card-meta';
-
-  function metaItem(label, value, cls) {
-    var mi = document.createElement('div');
-    mi.className = 'meta-item';
-    var ml = document.createElement('div');
-    ml.className = 'meta-label';
-    ml.textContent = label;
-    var mv = document.createElement('div');
-    mv.className = 'meta-value' + (cls ? ' ' + cls : '');
-    mv.textContent = value || '—';
-    mi.appendChild(ml);
-    mi.appendChild(mv);
-    return mi;
+  var metaDiv = document.createElement('div'); metaDiv.className = 'card-meta';
+  function mi(label, value, cls) {
+    var d = document.createElement('div'); d.className = 'meta-item';
+    var ml = document.createElement('div'); ml.className = 'meta-label'; ml.textContent = label;
+    var mv = document.createElement('div'); mv.className = 'meta-value' + (cls ? ' ' + cls : ''); mv.textContent = value || '—';
+    d.appendChild(ml); d.appendChild(mv); return d;
   }
 
   var isEquip = ['tractor','mower','skidsteer','atv','gokart','implement','planter','splitter','loader','other'].indexOf(item.category) !== -1;
-
   if (isEquip) {
-    metaDiv.appendChild(metaItem('Hours', item.hours || '—'));
-    metaDiv.appendChild(metaItem('Serial', item.serial || '—'));
-    metaDiv.appendChild(metaItem('Last Service', item.oilLastDate || '—'));
-    metaDiv.appendChild(metaItem('Next Service', item.oilNextMiles ? item.oilNextMiles + ' hrs' : '—'));
+    metaDiv.appendChild(mi('Hours', item.hours || '—'));
+    metaDiv.appendChild(mi('Serial', item.serial || '—'));
+    metaDiv.appendChild(mi('Last Service', item.oilLastDate || '—'));
+    metaDiv.appendChild(mi('Next Service', item.oilNextMiles ? item.oilNextMiles + ' hrs' : '—'));
   } else {
-    metaDiv.appendChild(metaItem('Mileage', item.mileage ? parseInt(item.mileage).toLocaleString() + ' mi' : '—'));
-    metaDiv.appendChild(metaItem('Plate', item.plate || '—'));
+    metaDiv.appendChild(mi('Mileage', item.mileage ? parseInt(item.mileage).toLocaleString() + ' mi' : '—'));
+    metaDiv.appendChild(mi('Plate', item.plate || '—'));
     var inspVal = (item.inspMonth && item.inspYear) ? item.inspMonth + '/' + item.inspYear : '—';
-    var inspClass = '';
-    if (item.inspMonth && item.inspYear) {
-      var s = getStatus(item);
-      if (s === 'due') inspClass = 'danger';
-      else if (s === 'warn') inspClass = 'warn';
-    }
-    metaDiv.appendChild(metaItem('Inspection', inspVal, inspClass));
-    metaDiv.appendChild(metaItem('Oil Next', item.oilNextMiles ? parseInt(item.oilNextMiles).toLocaleString() + ' mi' : '—'));
+    var inspCls = '';
+    if (item.inspMonth && item.inspYear) { var s2 = getStatus(item); if (s2 === 'due') inspCls = 'danger'; else if (s2 === 'warn') inspCls = 'warn'; }
+    metaDiv.appendChild(mi('Inspection', inspVal, inspCls));
+    metaDiv.appendChild(mi('Oil Next', item.oilNextMiles ? parseInt(item.oilNextMiles).toLocaleString() + ' mi' : '—'));
   }
 
   card.appendChild(topDiv);
@@ -774,67 +790,68 @@ function buildModalBody(item) {
   var body = document.getElementById('modalBody');
   body.innerHTML = '';
 
-  function section(title) {
-    var s = document.createElement('div');
-    s.className = 'modal-section';
-    var t = document.createElement('div');
-    t.className = 'modal-section-title';
-    t.textContent = title;
-    s.appendChild(t);
-    return s;
+  var catOpts = [{value:'automobile',label:'Automobile'},{value:'truck',label:'Truck'},{value:'van',label:'Van'},{value:'suv',label:'SUV'},{value:'ev',label:'EV'},{value:'tractor',label:'Tractor'},{value:'mower',label:'Mower'},{value:'skidsteer',label:'Skid Steer'},{value:'loader',label:'Loader'},{value:'atv',label:'ATV'},{value:'gokart',label:'Go-Kart'},{value:'implement',label:'Implement'},{value:'planter',label:'Planter'},{value:'splitter',label:'Log Splitter'},{value:'other',label:'Other'}];
+  var finOpts = [{value:'paid',label:'Paid Off'},{value:'lease',label:'Lease'},{value:'financed',label:'Financed'},{value:'other',label:'Other'}];
+
+  function sec(title) {
+    var s = document.createElement('div'); s.className = 'modal-section';
+    var t = document.createElement('div'); t.className = 'modal-section-title'; t.textContent = title;
+    s.appendChild(t); return s;
   }
 
   function field(label, id, value, type, full, opts) {
-    type = type || 'text';
-    var d = document.createElement('div');
-    d.className = 'detail-field' + (full ? ' full' : '');
-    var l = document.createElement('label');
-    l.textContent = label;
-    l.setAttribute('for', id);
-    d.appendChild(l);
+    var d = document.createElement('div'); d.className = 'detail-field' + (full ? ' full' : '');
+    var l = document.createElement('label'); l.textContent = label; l.setAttribute('for', id); d.appendChild(l);
     var inp;
     if (type === 'select') {
-      inp = document.createElement('select');
-      inp.id = id;
-      (opts || []).forEach(function(o) {
-        var op = document.createElement('option');
-        op.value = o.value;
-        op.textContent = o.label;
-        if (o.value === value) op.selected = true;
-        inp.appendChild(op);
-      });
+      inp = document.createElement('select'); inp.id = id;
+      (opts || []).forEach(function(o) { var op = document.createElement('option'); op.value = o.value; op.textContent = o.label; if (o.value === value) op.selected = true; inp.appendChild(op); });
     } else if (type === 'textarea') {
-      inp = document.createElement('textarea');
-      inp.id = id;
-      inp.value = value || '';
+      inp = document.createElement('textarea'); inp.id = id; inp.value = value || '';
     } else {
-      inp = document.createElement('input');
-      inp.type = type;
-      inp.id = id;
-      inp.value = value || '';
+      inp = document.createElement('input'); inp.type = type || 'text'; inp.id = id; inp.value = value || '';
     }
-    d.appendChild(inp);
-    return d;
+    d.appendChild(inp); return d;
   }
 
-  var catOpts = [
-    {value:'automobile',label:'Automobile'},{value:'truck',label:'Truck'},
-    {value:'van',label:'Van'},{value:'suv',label:'SUV'},{value:'ev',label:'EV'},
-    {value:'tractor',label:'Tractor'},{value:'mower',label:'Mower'},
-    {value:'skidsteer',label:'Skid Steer'},{value:'loader',label:'Loader'},
-    {value:'atv',label:'ATV'},{value:'gokart',label:'Go-Kart'},
-    {value:'implement',label:'Implement'},{value:'planter',label:'Planter'},
-    {value:'splitter',label:'Log Splitter'},{value:'other',label:'Other'}
-  ];
-  var finOpts = [
-    {value:'paid',label:'Paid Off'},{value:'lease',label:'Lease'},
-    {value:'financed',label:'Financed'},{value:'other',label:'Other'}
-  ];
+  // OCR PANEL
+  if (!isEquip) {
+    var ocrPanel = document.createElement('div'); ocrPanel.className = 'ocr-panel';
+    var ocrTitle = document.createElement('div'); ocrTitle.className = 'ocr-panel-title'; ocrTitle.textContent = 'Scan with Camera';
+    var ocrRow = document.createElement('div'); ocrRow.className = 'ocr-row';
+    function ocrBtn(label, mode) {
+      var b = document.createElement('button'); b.className = 'ocr-btn'; b.textContent = label;
+      b.addEventListener('click', function() { openOcrModal(item.id, mode); });
+      return b;
+    }
+    ocrRow.appendChild(ocrBtn('📷 License Plate', 'plate'));
+    ocrRow.appendChild(ocrBtn('🔍 Inspection Sticker', 'inspection'));
+    ocrPanel.appendChild(ocrTitle);
+    ocrPanel.appendChild(ocrRow);
+    body.appendChild(ocrPanel);
+  }
 
-  var sec1 = section('Basic Info');
-  var g1 = document.createElement('div');
-  g1.className = 'detail-grid';
-  g1.appendChild(field('Nickname / Name', 'f_name', item.name, 'text', false));
+  // PHOTO FIELD
+  var photoSec = sec('Photo');
+  var photoGrid = document.createElement('div'); photoGrid.className = 'detail-grid';
+  var photoField = document.createElement('div'); photoField.className = 'detail-field full';
+  var photoLabel = document.createElement('label'); photoLabel.textContent = 'Photo URL or tap to upload';
+  var photoInp = document.createElement('input'); photoInp.type = 'text'; photoInp.id = 'f_photo'; photoInp.value = item.photo || ''; photoInp.placeholder = 'https://... or use camera button';
+  var photoFileInp = document.createElement('input'); photoFileInp.type = 'file'; photoFileInp.accept = 'image/*'; photoFileInp.style.display = 'none';
+  photoFileInp.addEventListener('change', function(e) {
+    var file = e.target.files[0]; if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function(ev) { photoInp.value = ev.target.result; };
+    reader.readAsDataURL(file);
+  });
+  var photoBtn = document.createElement('button'); photoBtn.className = 'ocr-btn'; photoBtn.style.marginTop = '6px'; photoBtn.textContent = '📷 Choose Photo';
+  photoBtn.addEventListener('click', function() { photoFileInp.click(); });
+  photoField.appendChild(photoLabel); photoField.appendChild(photoInp); photoField.appendChild(photoFileInp); photoField.appendChild(photoBtn);
+  photoGrid.appendChild(photoField); photoSec.appendChild(photoGrid); body.appendChild(photoSec);
+
+  var sec1 = sec('Basic Info');
+  var g1 = document.createElement('div'); g1.className = 'detail-grid';
+  g1.appendChild(field('Nickname / Name', 'f_name', item.name));
   g1.appendChild(field('Category', 'f_category', item.category, 'select', false, catOpts));
   g1.appendChild(field('Year', 'f_year', item.year));
   g1.appendChild(field('Make', 'f_make', item.make));
@@ -855,83 +872,48 @@ function buildModalBody(item) {
     g1.appendChild(field('Oil Change Last (Miles)', 'f_oilLastMiles', item.oilLastMiles));
     g1.appendChild(field('Oil Change Next (Miles)', 'f_oilNextMiles', item.oilNextMiles));
   }
-  sec1.appendChild(g1);
-  body.appendChild(sec1);
+  sec1.appendChild(g1); body.appendChild(sec1);
 
-  var sec2 = section('Financial');
-  var g2 = document.createElement('div');
-  g2.className = 'detail-grid';
+  var sec2 = sec('Financial');
+  var g2 = document.createElement('div'); g2.className = 'detail-grid';
   g2.appendChild(field('Status', 'f_finStatus', item.financialStatus, 'select', false, finOpts));
   g2.appendChild(field('Purchase Price', 'f_purchasePrice', item.purchasePrice));
   g2.appendChild(field('Monthly Payment', 'f_monthlyPayment', item.monthlyPayment));
   g2.appendChild(field('Payoff Date', 'f_payoffDate', item.payoffDate, 'date'));
   g2.appendChild(field('Current Balance', 'f_balance', item.balance));
-  sec2.appendChild(g2);
-  body.appendChild(sec2);
+  sec2.appendChild(g2); body.appendChild(sec2);
 
-  var sec3 = section('Documents & Notes');
-  var g3 = document.createElement('div');
-  g3.className = 'detail-grid';
+  var sec3 = sec('Documents & Notes');
+  var g3 = document.createElement('div'); g3.className = 'detail-grid';
   g3.appendChild(field('Manual / Google Drive URL', 'f_manualUrl', item.manualUrl, 'text', true));
   g3.appendChild(field('Notes', 'f_notes', item.notes, 'textarea', true));
-  sec3.appendChild(g3);
-  body.appendChild(sec3);
+  sec3.appendChild(g3); body.appendChild(sec3);
 
   if (item.maintenance && item.maintenance.length > 0) {
-    var sec4 = section('Maintenance History');
+    var sec4 = sec('Maintenance History (' + item.maintenance.length + ' entries)');
     var histDiv = document.createElement('div');
-    histDiv.style.cssText = 'display:flex;flex-direction:column;gap:6px;';
-    item.maintenance.forEach(function(m) {
-      var row = document.createElement('div');
-      row.style.cssText = 'background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:10px 12px;font-size:12px;';
-      var top = document.createElement('div');
-      top.style.cssText = 'display:flex;justify-content:space-between;margin-bottom:4px;';
-      var typeSpan = document.createElement('span');
-      typeSpan.style.fontWeight = '600';
-      typeSpan.textContent = m.type;
-      var dateSpan = document.createElement('span');
-      dateSpan.style.color = 'var(--muted)';
-      dateSpan.style.fontFamily = 'var(--font-mono)';
-      dateSpan.textContent = m.date || (m.hours ? m.hours + ' hrs' : '');
-      top.appendChild(typeSpan);
-      top.appendChild(dateSpan);
-      row.appendChild(top);
-      if (m.notes) {
-        var notesP = document.createElement('div');
-        notesP.style.color = 'var(--muted)';
-        notesP.textContent = m.notes;
-        row.appendChild(notesP);
-      }
-      if (m.cost) {
-        var costP = document.createElement('div');
-        costP.style.cssText = 'color:var(--accent);margin-top:2px;font-family:var(--font-mono);';
-        costP.textContent = '$' + parseFloat(m.cost).toFixed(2);
-        row.appendChild(costP);
-      }
+    item.maintenance.slice().reverse().forEach(function(m) {
+      var row = document.createElement('div'); row.className = 'history-entry';
+      var top = document.createElement('div'); top.className = 'history-entry-top';
+      var typeSpan = document.createElement('span'); typeSpan.className = 'history-type'; typeSpan.textContent = m.type;
+      var dateSpan = document.createElement('span'); dateSpan.className = 'history-date'; dateSpan.textContent = m.date || (m.hours ? m.hours + ' hrs' : '');
+      top.appendChild(typeSpan); top.appendChild(dateSpan); row.appendChild(top);
+      if (m.notes) { var np = document.createElement('div'); np.className = 'history-notes'; np.textContent = m.notes; row.appendChild(np); }
+      if (m.cost) { var cp = document.createElement('div'); cp.className = 'history-cost'; cp.textContent = '$' + parseFloat(m.cost).toFixed(2); row.appendChild(cp); }
       histDiv.appendChild(row);
     });
-    sec4.appendChild(histDiv);
-    body.appendChild(sec4);
+    sec4.appendChild(histDiv); body.appendChild(sec4);
   }
 }
 
 function openAddModal() {
-  currentItemId = null;
+  var newItem = { id:'v'+Date.now(),name:'',category:'automobile',year:'',make:'',model:'',trim:'',serial:'',vin:'',plate:'',inspMonth:'',inspYear:'',regMonth:'',regYear:'',mileage:'',hours:'',oilLastDate:'',oilLastMiles:'',oilNextMiles:'',notes:'',financialStatus:'paid',purchasePrice:'',monthlyPayment:'',payoffDate:'',balance:'',manualUrl:'',photo:'',maintenance:[] };
+  appData.vehicles.push(newItem);
+  currentItemId = newItem.id;
   document.getElementById('modalTitle').textContent = 'Add New Item';
   document.getElementById('deleteBtn').style.display = 'none';
-  var newItem = {
-    id: 'v' + Date.now(), name: '', category: 'automobile',
-    year: '', make: '', model: '', trim: '', serial: '', vin: '', plate: '',
-    inspMonth: '', inspYear: '', regMonth: '', regYear: '',
-    mileage: '', hours: '', oilLastDate: '', oilLastMiles: '', oilNextMiles: '',
-    notes: '', financialStatus: 'paid',
-    purchasePrice: '', monthlyPayment: '', payoffDate: '', balance: '',
-    manualUrl: '', photo: '', maintenance: []
-  };
   buildModalBody(newItem);
   document.getElementById('modalOverlay').classList.add('open');
-  currentItemId = newItem.id;
-  appData.vehicles.push(newItem);
 }
 
 function openEditModal(id) {
@@ -947,153 +929,144 @@ function openEditModal(id) {
 function saveItem() {
   var item = appData.vehicles.find(function(v) { return v.id === currentItemId; });
   if (!item) return;
-  var fields = ['name','category','year','make','model','trim','serial','vin','plate',
-    'inspMonth','inspYear','regMonth','regYear','mileage','hours',
-    'oilLastDate','oilLastMiles','oilNextMiles','notes','finStatus',
-    'purchasePrice','monthlyPayment','payoffDate','balance','manualUrl'];
-  var domMap = {
-    name:'f_name',category:'f_category',year:'f_year',make:'f_make',model:'f_model',
-    trim:'f_trim',serial:'f_serial',vin:'f_vin',plate:'f_plate',
-    inspMonth:'f_inspMonth',inspYear:'f_inspYear',regMonth:'f_regMonth',regYear:'f_regYear',
-    mileage:'f_mileage',hours:'f_hours',oilLastDate:'f_oilLastDate',
-    oilLastMiles:'f_oilLastMiles',oilNextMiles:'f_oilNextMiles',
-    notes:'f_notes',financialStatus:'f_finStatus',
-    purchasePrice:'f_purchasePrice',monthlyPayment:'f_monthlyPayment',
-    payoffDate:'f_payoffDate',balance:'f_balance',manualUrl:'f_manualUrl'
-  };
-  Object.keys(domMap).forEach(function(k) {
-    var el = document.getElementById(domMap[k]);
-    if (el) item[k] = el.value;
-  });
-  saveData();
-  closeModal();
-  renderFleet();
-  showToast('Saved!');
+  var map = { name:'f_name',category:'f_category',year:'f_year',make:'f_make',model:'f_model',trim:'f_trim',serial:'f_serial',vin:'f_vin',plate:'f_plate',inspMonth:'f_inspMonth',inspYear:'f_inspYear',regMonth:'f_regMonth',regYear:'f_regYear',mileage:'f_mileage',hours:'f_hours',oilLastDate:'f_oilLastDate',oilLastMiles:'f_oilLastMiles',oilNextMiles:'f_oilNextMiles',notes:'f_notes',financialStatus:'f_finStatus',purchasePrice:'f_purchasePrice',monthlyPayment:'f_monthlyPayment',payoffDate:'f_payoffDate',balance:'f_balance',manualUrl:'f_manualUrl',photo:'f_photo' };
+  Object.keys(map).forEach(function(k) { var el = document.getElementById(map[k]); if (el) item[k] = el.value; });
+  saveData(); closeModal(); renderFleet(); showToast('Saved!');
 }
 
 function deleteItem() {
   if (!confirm('Delete this item?')) return;
   appData.vehicles = appData.vehicles.filter(function(v) { return v.id !== currentItemId; });
-  saveData();
-  closeModal();
-  renderFleet();
-  showToast('Deleted');
+  saveData(); closeModal(); renderFleet(); showToast('Deleted');
 }
 
 function closeModal() {
   document.getElementById('modalOverlay').classList.remove('open');
   var item = appData.vehicles.find(function(v) { return v.id === currentItemId; });
-  if (item && !item.name) {
-    appData.vehicles = appData.vehicles.filter(function(v) { return v.id !== currentItemId; });
-    saveData();
-  }
+  if (item && !item.name) { appData.vehicles = appData.vehicles.filter(function(v) { return v.id !== currentItemId; }); saveData(); }
   currentItemId = null;
 }
 
+// LOG MAINTENANCE
+function openLogModal(itemId, type) {
+  logItemId = itemId;
+  var item = appData.vehicles.find(function(v) { return v.id === itemId; });
+  if (!item) return;
+  document.getElementById('logModalSubtitle').textContent = item.name + (type ? ' — ' + type : '');
+  if (type) { var sel = document.getElementById('log_type'); for (var i=0; i<sel.options.length; i++) { if (sel.options[i].value === type) { sel.selectedIndex = i; break; } } }
+  document.getElementById('log_date').value = new Date().toISOString().slice(0,10);
+  document.getElementById('log_miles').value = item.mileage || item.hours || '';
+  document.getElementById('log_cost').value = '';
+  document.getElementById('log_next').value = '';
+  document.getElementById('log_notes').value = '';
+  document.getElementById('logModalOverlay').classList.add('open');
+}
+
+function closeLogModal() { document.getElementById('logModalOverlay').classList.remove('open'); logItemId = null; }
+
+function saveLogEntry() {
+  var item = appData.vehicles.find(function(v) { return v.id === logItemId; });
+  if (!item) return;
+  if (!item.maintenance) item.maintenance = [];
+  var entry = {
+    id: 'm' + Date.now(),
+    type: document.getElementById('log_type').value,
+    date: document.getElementById('log_date').value,
+    hours: document.getElementById('log_miles').value,
+    cost: document.getElementById('log_cost').value,
+    next: document.getElementById('log_next').value,
+    notes: document.getElementById('log_notes').value
+  };
+  item.maintenance.push(entry);
+  // update last service date
+  if (entry.date) item.oilLastDate = entry.date;
+  if (entry.hours) item.oilLastMiles = entry.hours;
+  if (entry.next) item.oilNextMiles = entry.next;
+  saveData(); closeLogModal(); renderMaintenance(); showToast('Service logged!');
+}
+
+// MAINTENANCE RENDER
 function renderMaintenance() {
   var items = appData.vehicles;
   var all = [];
   var now = new Date();
 
   items.forEach(function(item) {
-    var status = getStatus(item);
     var isEquip = ['tractor','mower','skidsteer','atv','gokart','implement','planter','splitter','loader','other'].indexOf(item.category) !== -1;
-
     if (!isEquip) {
       if (item.inspMonth && item.inspYear) {
-        var inspDate = new Date(parseInt(item.inspYear), parseInt(item.inspMonth) - 1, 1);
-        var monthsDiff = (inspDate.getFullYear() - now.getFullYear()) * 12 + (inspDate.getMonth() - now.getMonth());
-        var s = monthsDiff < 0 ? 'due' : monthsDiff <= 2 ? 'warn' : 'ok';
-        all.push({ vehicle: item.name, type: 'Inspection', last: '—', next: item.inspMonth + '/' + item.inspYear, status: s, itemId: item.id });
+        var iDate = new Date(parseInt(item.inspYear), parseInt(item.inspMonth)-1, 1);
+        var md = (iDate.getFullYear()-now.getFullYear())*12 + (iDate.getMonth()-now.getMonth());
+        all.push({vehicle:item.name,type:'Inspection',last:'—',next:item.inspMonth+'/'+item.inspYear,status:md<0?'due':md<=2?'warn':'ok',itemId:item.id,logType:'Inspection Passed'});
       }
       if (item.regMonth && item.regYear) {
-        var regDate = new Date(parseInt(item.regYear), parseInt(item.regMonth) - 1, 1);
-        var rDiff = (regDate.getFullYear() - now.getFullYear()) * 12 + (regDate.getMonth() - now.getMonth());
-        var rs = rDiff < 0 ? 'due' : rDiff <= 2 ? 'warn' : 'ok';
-        all.push({ vehicle: item.name, type: 'Registration', last: '—', next: item.regMonth + '/' + item.regYear, status: rs, itemId: item.id });
+        var rDate = new Date(parseInt(item.regYear), parseInt(item.regMonth)-1, 1);
+        var rd = (rDate.getFullYear()-now.getFullYear())*12 + (rDate.getMonth()-now.getMonth());
+        all.push({vehicle:item.name,type:'Registration',last:'—',next:item.regMonth+'/'+item.regYear,status:rd<0?'due':rd<=2?'warn':'ok',itemId:item.id,logType:'Registration Renewed'});
       }
       if (item.oilNextMiles) {
-        var diff = item.mileage ? parseInt(item.oilNextMiles) - parseInt(item.mileage) : null;
-        var os = diff === null ? 'ok' : diff < 0 ? 'due' : diff < 500 ? 'warn' : 'ok';
-        all.push({ vehicle: item.name, type: 'Oil Change', last: item.oilLastDate || '—', next: parseInt(item.oilNextMiles).toLocaleString() + ' mi', status: os, itemId: item.id });
+        var diff = item.mileage ? parseInt(item.oilNextMiles)-parseInt(item.mileage) : null;
+        var os = diff===null?'ok':diff<0?'due':diff<500?'warn':'ok';
+        all.push({vehicle:item.name,type:'Oil Change',last:item.oilLastDate||'—',next:parseInt(item.oilNextMiles).toLocaleString()+' mi',status:os,itemId:item.id,logType:'Oil Change'});
       }
     } else {
       if (item.oilNextMiles && item.hours) {
-        var hdiff = parseInt(item.oilNextMiles) - parseInt(item.hours);
-        var hs = hdiff < 0 ? 'due' : hdiff < 25 ? 'warn' : 'ok';
-        all.push({ vehicle: item.name, type: 'Oil / Service', last: item.oilLastDate || '—', next: item.oilNextMiles + ' hrs', status: hs, itemId: item.id });
+        var hdiff = parseInt(item.oilNextMiles)-parseInt(item.hours);
+        all.push({vehicle:item.name,type:'Oil / Service',last:item.oilLastDate||'—',next:item.oilNextMiles+' hrs',status:hdiff<0?'due':hdiff<25?'warn':'ok',itemId:item.id,logType:'Oil Change'});
       }
     }
   });
 
-  var counts = { due: 0, warn: 0, ok: 0, total: all.length };
-  all.forEach(function(a) { counts[a.status] = (counts[a.status] || 0) + 1; });
+  var counts = {due:0,warn:0,ok:0,total:all.length};
+  all.forEach(function(a) { counts[a.status] = (counts[a.status]||0)+1; });
 
-  var sumContainer = document.getElementById('maintSummary');
-  sumContainer.innerHTML = '';
-  function sumCard(num, label, cls) {
-    var c = document.createElement('div');
-    c.className = 'summary-card';
-    var n = document.createElement('div');
-    n.className = 'summary-num ' + (cls || '');
-    n.textContent = num;
-    var l = document.createElement('div');
-    l.className = 'summary-lbl';
-    l.textContent = label;
-    c.appendChild(n);
-    c.appendChild(l);
-    return c;
+  // notification banner
+  renderNotifBanner(counts);
+
+  var sc = document.getElementById('maintSummary'); sc.innerHTML = '';
+  function sCard(num, label, cls, filterKey) {
+    var c = document.createElement('div'); c.className = 'summary-card';
+    c.addEventListener('click', function() {
+      var chips = document.querySelectorAll('.filter-chip');
+      chips.forEach(function(ch) { ch.classList.remove('active'); });
+      maintFilter = filterKey;
+      chips.forEach(function(ch) { if (ch.getAttribute('onclick') && ch.getAttribute('onclick').indexOf("'"+filterKey+"'") !== -1) ch.classList.add('active'); });
+      renderMaintList(all);
+    });
+    var n = document.createElement('div'); n.className = 'summary-num '+(cls||''); n.textContent = num;
+    var l = document.createElement('div'); l.className = 'summary-lbl'; l.textContent = label;
+    c.appendChild(n); c.appendChild(l); return c;
   }
-  sumContainer.appendChild(sumCard(counts.total, 'Total Items', ''));
-  sumContainer.appendChild(sumCard(counts.due || 0, 'Overdue', 'danger'));
-  sumContainer.appendChild(sumCard(counts.warn || 0, 'Due Soon', 'warn'));
-  sumContainer.appendChild(sumCard(counts.ok || 0, 'Up to Date', 'ok'));
+  sc.appendChild(sCard(counts.total,'Total Items','','all'));
+  sc.appendChild(sCard(counts.due||0,'Overdue','danger','due'));
+  sc.appendChild(sCard(counts.warn||0,'Due Soon','warn','warn'));
+  sc.appendChild(sCard(counts.ok||0,'Up to Date','ok','ok'));
 
+  renderMaintList(all);
+}
+
+function renderMaintList(all) {
   var filtered = maintFilter === 'all' ? all : all.filter(function(a) { return a.status === maintFilter; });
-  filtered.sort(function(a, b) {
-    var order = { due: 0, warn: 1, ok: 2 };
-    return order[a.status] - order[b.status];
-  });
-
-  var list = document.getElementById('maintList');
-  list.innerHTML = '';
-  if (filtered.length === 0) {
-    var empty = document.createElement('div');
-    empty.className = 'empty-state';
+  filtered.sort(function(a,b) { var o={due:0,warn:1,ok:2}; return o[a.status]-o[b.status]; });
+  var list = document.getElementById('maintList'); list.innerHTML = '';
+  if (!filtered.length) {
+    var empty = document.createElement('div'); empty.className = 'empty-state';
     empty.innerHTML = '<div class="empty-icon">✅</div><div>Nothing to show for this filter.</div>';
-    list.appendChild(empty);
-    return;
+    list.appendChild(empty); return;
   }
   filtered.forEach(function(m) {
-    var row = document.createElement('div');
-    row.className = 'maint-row status-' + m.status;
-    function cell(txt, cls) {
-      var d = document.createElement('div');
-      d.className = cls || '';
-      d.textContent = txt;
-      return d;
-    }
+    var row = document.createElement('div'); row.className = 'maint-row status-'+m.status;
     var vc = document.createElement('div');
-    var vn = document.createElement('div');
-    vn.className = 'maint-vehicle';
-    vn.textContent = m.vehicle;
-    var vt = document.createElement('div');
-    vt.className = 'maint-type';
-    vt.textContent = m.type;
-    vc.appendChild(vn);
-    vc.appendChild(vt);
-    row.appendChild(vc);
-    row.appendChild(cell(m.last, 'maint-last'));
-    row.appendChild(cell(m.next, 'maint-next ' + m.status));
-    var badge = document.createElement('div');
-    badge.className = 'badge badge-' + m.status;
-    badge.textContent = m.status === 'ok' ? 'OK' : m.status === 'warn' ? 'Due Soon' : 'Overdue';
-    row.appendChild(badge);
-    var logBtn = document.createElement('button');
-    logBtn.className = 'maint-log-btn';
-    logBtn.textContent = '+ Log';
-    logBtn.addEventListener('click', function() { openEditModal(m.itemId); });
-    row.appendChild(logBtn);
+    var vn = document.createElement('div'); vn.className = 'maint-vehicle'; vn.textContent = m.vehicle;
+    var vt = document.createElement('div'); vt.className = 'maint-type'; vt.textContent = m.type;
+    vc.appendChild(vn); vc.appendChild(vt);
+    var lastD = document.createElement('div'); lastD.className = 'maint-last'; lastD.textContent = m.last;
+    var nextD = document.createElement('div'); nextD.className = 'maint-next '+m.status; nextD.textContent = m.next;
+    var badge = document.createElement('div'); badge.className = 'badge badge-'+m.status;
+    badge.textContent = m.status==='ok'?'OK':m.status==='warn'?'Due Soon':'Overdue';
+    var logBtn = document.createElement('button'); logBtn.className = 'maint-log-btn'; logBtn.textContent = '+ Log';
+    logBtn.addEventListener('click', function() { openLogModal(m.itemId, m.logType); });
+    row.appendChild(vc); row.appendChild(lastD); row.appendChild(nextD); row.appendChild(badge); row.appendChild(logBtn);
     list.appendChild(row);
   });
 }
@@ -1105,158 +1078,367 @@ function filterMaint(filter, btn) {
   renderMaintenance();
 }
 
+// NOTIFICATIONS
+function renderNotifBanner(counts) {
+  var area = document.getElementById('notifBannerArea'); area.innerHTML = '';
+  if (!('Notification' in window)) return;
+  if (Notification.permission === 'default') {
+    var b = document.createElement('div'); b.className = 'notif-banner warn-banner';
+    var txt = document.createElement('div');
+    var t = document.createElement('div'); t.className = 'notif-text'; t.textContent = 'Enable notifications to get reminders';
+    var s = document.createElement('div'); s.className = 'notif-sub'; s.textContent = 'Get alerted when inspections, registrations, or oil changes are coming due';
+    txt.appendChild(t); txt.appendChild(s);
+    var btn = document.createElement('button'); btn.className = 'notif-enable-btn'; btn.textContent = 'Enable';
+    btn.addEventListener('click', requestNotifPermission);
+    b.appendChild(txt); b.appendChild(btn); area.appendChild(b);
+  }
+  if ((counts.due > 0 || counts.warn > 0) && Notification.permission === 'granted') {
+    var items = [];
+    if (counts.due > 0) items.push(counts.due + ' overdue');
+    if (counts.warn > 0) items.push(counts.warn + ' due soon');
+    var b2 = document.createElement('div'); b2.className = 'notif-banner' + (counts.due > 0 ? ' warn-banner' : '');
+    var t2 = document.createElement('div'); t2.className = 'notif-text'; t2.textContent = '⚠️ ' + items.join(' · ');
+    var s2 = document.createElement('div'); s2.className = 'notif-sub'; s2.textContent = 'Filter by Overdue or Due Soon to review';
+    b2.appendChild(t2); b2.appendChild(s2); area.appendChild(b2);
+  }
+}
+
+function requestNotifPermission() {
+  if (!('Notification' in window)) { showToast('Notifications not supported in this browser'); return; }
+  Notification.requestPermission().then(function(result) {
+    if (result === 'granted') {
+      showToast('Notifications enabled!');
+      checkAndNotify();
+      renderMaintenance();
+      updateNotifStatus();
+    } else {
+      showToast('Notifications blocked — check browser settings');
+    }
+  });
+}
+
+function checkAndNotify() {
+  if (!('Notification' in window) || Notification.permission !== 'granted') return;
+  var days = parseInt(localStorage.getItem('notifDays') || '30');
+  var now = new Date();
+  var dueItems = [];
+  appData.vehicles.forEach(function(item) {
+    if (item.inspMonth && item.inspYear) {
+      var iDate = new Date(parseInt(item.inspYear), parseInt(item.inspMonth)-1, 28);
+      var diffDays = Math.round((iDate - now) / 86400000);
+      if (diffDays <= days && diffDays > -30) dueItems.push(item.name + ' inspection ' + (diffDays < 0 ? 'OVERDUE' : 'due in ' + diffDays + ' days'));
+    }
+    if (item.regMonth && item.regYear) {
+      var rDate = new Date(parseInt(item.regYear), parseInt(item.regMonth)-1, 28);
+      var rDiff = Math.round((rDate - now) / 86400000);
+      if (rDiff <= days && rDiff > -30) dueItems.push(item.name + ' registration ' + (rDiff < 0 ? 'OVERDUE' : 'due in ' + rDiff + ' days'));
+    }
+    if (item.oilNextMiles && item.mileage) {
+      var oilDiff = parseInt(item.oilNextMiles) - parseInt(item.mileage);
+      if (oilDiff < 500) dueItems.push(item.name + ' oil change ' + (oilDiff < 0 ? 'OVERDUE' : 'in ' + oilDiff + ' miles'));
+    }
+  });
+  if (dueItems.length > 0) {
+    new Notification('Schneider Farms Garage', {
+      body: dueItems.slice(0,3).join('\n') + (dueItems.length > 3 ? '\n...and ' + (dueItems.length-3) + ' more' : ''),
+      icon: 'garage-icon-192.png',
+      tag: 'garage-reminder'
+    });
+  }
+}
+
+function sendTestNotif() {
+  if (Notification.permission !== 'granted') { showToast('Enable notifications first'); return; }
+  new Notification('Schneider Farms Garage', { body: 'Notifications are working!', tag: 'garage-test' });
+}
+
+function updateNotifStatus() {
+  var el = document.getElementById('notifStatus');
+  if (!el) return;
+  if (!('Notification' in window)) { el.textContent = '⚠️ Notifications not supported in this browser.'; el.style.color = 'var(--warn)'; }
+  else if (Notification.permission === 'granted') { el.textContent = '✅ Notifications enabled'; el.style.color = 'var(--accent)'; }
+  else if (Notification.permission === 'denied') { el.textContent = '🚫 Notifications blocked — go to browser settings to allow'; el.style.color = 'var(--danger)'; }
+  else { el.textContent = '○ Notifications not yet enabled'; el.style.color = 'var(--muted)'; }
+}
+
+// OCR / CAMERA
+function openOcrModal(itemId, mode) {
+  ocrItemId = itemId;
+  ocrMode = mode;
+  pendingOcrData = null;
+  document.getElementById('ocrPreview').style.display = 'none';
+  document.getElementById('ocrSpinner').style.display = 'none';
+  document.getElementById('ocrResult').textContent = '';
+  document.getElementById('ocrResult').className = 'ocr-result';
+  document.getElementById('ocrFields').style.display = 'none';
+  document.getElementById('ocrApplyBtn').style.display = 'none';
+  document.getElementById('ocrFileInput').value = '';
+  if (mode === 'plate') {
+    document.getElementById('ocrModalTitle').textContent = 'Scan License Plate';
+    document.getElementById('ocrInstructions').textContent = 'Take a clear, close-up photo of the license plate. Ensure good lighting.';
+  } else {
+    document.getElementById('ocrModalTitle').textContent = 'Scan Inspection Sticker';
+    document.getElementById('ocrInstructions').textContent = 'Take a photo of the inspection sticker showing the expiration month and year.';
+  }
+  document.getElementById('ocrModalOverlay').classList.add('open');
+}
+
+function closeOcrModal() { document.getElementById('ocrModalOverlay').classList.remove('open'); ocrItemId = null; ocrMode = null; }
+
+function triggerOcrGallery() {
+  var inp = document.getElementById('ocrFileInput');
+  inp.removeAttribute('capture');
+  inp.click();
+  setTimeout(function() { inp.setAttribute('capture','environment'); }, 500);
+}
+
+function handleOcrImage(e) {
+  var file = e.target.files[0]; if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    var preview = document.getElementById('ocrPreview');
+    document.getElementById('ocrPreviewImg').src = ev.target.result;
+    preview.style.display = 'block';
+    runOcr(ev.target.result);
+  };
+  reader.readAsDataURL(file);
+}
+
+function runOcr(dataUrl) {
+  var spinner = document.getElementById('ocrSpinner');
+  var result = document.getElementById('ocrResult');
+  var fieldsDiv = document.getElementById('ocrFields');
+  spinner.style.display = 'block';
+  result.textContent = '';
+  fieldsDiv.style.display = 'none';
+  document.getElementById('ocrApplyBtn').style.display = 'none';
+
+  var base64 = dataUrl.split(',')[1];
+  var prompt = ocrMode === 'plate'
+    ? 'This is a photo of a vehicle license plate. Extract the license plate number and the state. Respond ONLY with a JSON object like: {"plate":"ABC1234","state":"VA"}. If you cannot read it clearly, respond with {"error":"Could not read plate"}.'
+    : 'This is a photo of a vehicle inspection sticker. Extract the expiration month (as a number 1-12) and expiration year (4 digits). Respond ONLY with a JSON object like: {"month":"6","year":"2026"}. If you cannot read it, respond with {"error":"Could not read sticker"}.';
+
+  fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 200,
+      messages: [{
+        role: 'user',
+        content: [
+          { type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: base64 } },
+          { type: 'text', text: prompt }
+        ]
+      }]
+    })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    spinner.style.display = 'none';
+    var text = '';
+    if (data.content && data.content[0]) text = data.content[0].text || '';
+    var clean = text.replace(/```json|```/g,'').trim();
+    try {
+      var parsed = JSON.parse(clean);
+      if (parsed.error) { result.textContent = '⚠️ ' + parsed.error; result.className = 'ocr-result err'; return; }
+      pendingOcrData = parsed;
+      var fieldList = document.getElementById('ocrFieldList'); fieldList.innerHTML = '';
+      if (ocrMode === 'plate') {
+        if (parsed.plate) addOcrField(fieldList, 'License Plate', parsed.plate);
+        if (parsed.state) addOcrField(fieldList, 'State', parsed.state);
+      } else {
+        if (parsed.month) addOcrField(fieldList, 'Expiration Month', parsed.month);
+        if (parsed.year) addOcrField(fieldList, 'Expiration Year', parsed.year);
+      }
+      fieldsDiv.style.display = 'block';
+      document.getElementById('ocrApplyBtn').style.display = 'inline-block';
+      result.textContent = '✓ Detected successfully';
+      result.className = 'ocr-result ok';
+    } catch(e) {
+      result.textContent = '⚠️ Could not parse response. Try a clearer photo.';
+      result.className = 'ocr-result err';
+    }
+  })
+  .catch(function(e) {
+    spinner.style.display = 'none';
+    result.textContent = '⚠️ Error: ' + e.message;
+    result.className = 'ocr-result err';
+  });
+}
+
+function addOcrField(container, label, value) {
+  var row = document.createElement('div');
+  row.style.cssText = 'display:flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:8px 10px;';
+  var lbl = document.createElement('span'); lbl.style.cssText = 'font-size:11px;color:var(--muted);min-width:100px;text-transform:uppercase;letter-spacing:0.5px;'; lbl.textContent = label;
+  var val = document.createElement('span'); val.style.cssText = 'font-family:var(--font-mono);font-size:13px;color:var(--accent);'; val.textContent = value;
+  row.appendChild(lbl); row.appendChild(val); container.appendChild(row);
+}
+
+function applyOcrResults() {
+  if (!pendingOcrData || !ocrItemId) return;
+  var item = appData.vehicles.find(function(v) { return v.id === ocrItemId; });
+  if (!item) return;
+  if (ocrMode === 'plate') {
+    if (pendingOcrData.plate) item.plate = pendingOcrData.plate;
+  } else {
+    if (pendingOcrData.month) item.inspMonth = pendingOcrData.month;
+    if (pendingOcrData.year) item.inspYear = pendingOcrData.year;
+  }
+  saveData();
+  closeOcrModal();
+  openEditModal(ocrItemId);
+  showToast('Fields updated from scan!');
+}
+
+// FINANCIAL
 function renderFinancial() {
   var container = document.getElementById('financialContainer');
   container.innerHTML = '';
-  var items = appData.vehicles.filter(function(v) {
-    return v.financialStatus === 'lease' || v.financialStatus === 'financed' || v.purchasePrice;
-  });
-  if (items.length === 0) {
+  var items = appData.vehicles.filter(function(v) { return v.financialStatus==='lease'||v.financialStatus==='financed'||v.purchasePrice; });
+  if (!items.length) {
     container.innerHTML = '<div class="empty-state"><div class="empty-icon">💰</div><div>No financial data yet. Edit a vehicle to add purchase price, payment, and balance.</div></div>';
     return;
   }
-  var table = document.createElement('div');
-  table.style.cssText = 'display:flex;flex-direction:column;gap:8px;';
+  var table = document.createElement('div'); table.style.cssText = 'display:flex;flex-direction:column;gap:8px;';
   items.forEach(function(item) {
     var row = document.createElement('div');
     row.style.cssText = 'background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px 16px;display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:12px;align-items:center;cursor:pointer;';
     row.addEventListener('click', function() { openEditModal(item.id); });
     function fc(label, value, color) {
       var d = document.createElement('div');
-      var l = document.createElement('div');
-      l.style.cssText = 'font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px;';
-      l.textContent = label;
-      var v = document.createElement('div');
-      v.style.cssText = 'font-size:13px;font-family:var(--font-mono);color:' + (color || 'var(--text)') + ';';
-      v.textContent = value || '—';
-      d.appendChild(l);
-      d.appendChild(v);
-      return d;
+      var l = document.createElement('div'); l.style.cssText = 'font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px;'; l.textContent = label;
+      var v = document.createElement('div'); v.style.cssText = 'font-size:13px;font-family:var(--font-mono);color:'+(color||'var(--text)')+';'; v.textContent = value||'—';
+      d.appendChild(l); d.appendChild(v); return d;
     }
-    var nameD = document.createElement('div');
-    var nn = document.createElement('div');
-    nn.style.cssText = 'font-weight:600;font-size:14px;';
-    nn.textContent = item.name;
-    var ns = document.createElement('div');
-    ns.style.cssText = 'font-size:11px;color:var(--muted);margin-top:2px;';
-    ns.textContent = item.year + ' ' + item.make + ' ' + item.model;
-    nameD.appendChild(nn);
-    nameD.appendChild(ns);
-    row.appendChild(nameD);
-    row.appendChild(fc('Purchase Price', item.purchasePrice ? '$' + parseFloat(item.purchasePrice).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}) : '—'));
-    row.appendChild(fc('Monthly Pmt', item.monthlyPayment ? '$' + parseFloat(item.monthlyPayment).toFixed(2) : '—'));
-    row.appendChild(fc('Balance', item.balance ? '$' + parseFloat(item.balance).toLocaleString() : (item.financialStatus === 'paid' ? 'Paid Off' : '—'), item.financialStatus === 'paid' ? 'var(--accent)' : 'var(--text)'));
-    row.appendChild(fc('Payoff Date', item.payoffDate || '—'));
+    var nd = document.createElement('div');
+    var nn = document.createElement('div'); nn.style.cssText = 'font-weight:600;font-size:14px;'; nn.textContent = item.name;
+    var ns = document.createElement('div'); ns.style.cssText = 'font-size:11px;color:var(--muted);margin-top:2px;'; ns.textContent = [item.year,item.make,item.model].filter(Boolean).join(' ');
+    nd.appendChild(nn); nd.appendChild(ns);
+    row.appendChild(nd);
+    row.appendChild(fc('Purchase Price', item.purchasePrice ? '$'+parseFloat(item.purchasePrice).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}) : '—'));
+    row.appendChild(fc('Monthly Pmt', item.monthlyPayment ? '$'+parseFloat(item.monthlyPayment).toFixed(2) : '—'));
+    row.appendChild(fc('Balance', item.balance ? '$'+parseFloat(item.balance).toLocaleString() : (item.financialStatus==='paid'?'Paid Off':'—'), item.financialStatus==='paid'?'var(--accent)':'var(--text)'));
+    row.appendChild(fc('Payoff Date', item.payoffDate||'—'));
     table.appendChild(row);
   });
   container.appendChild(table);
 }
 
+// SETTINGS
 function loadSettings() {
-  var pat = localStorage.getItem('gh_pat') || '';
-  var repo = localStorage.getItem('gh_repo') || 'schneidjii/schneidjii.github.io';
-  var path = localStorage.getItem('gh_path') || 'garage-data.json';
-  document.getElementById('patInput').value = pat;
-  document.getElementById('repoInput').value = repo;
-  document.getElementById('pathInput').value = path;
+  document.getElementById('patInput').value = localStorage.getItem('gh_pat') || '';
+  document.getElementById('repoInput').value = localStorage.getItem('gh_repo') || 'schneidjii/schneidjii.github.io';
+  document.getElementById('pathInput').value = localStorage.getItem('gh_path') || 'garage-data.json';
+  document.getElementById('notifDays').value = localStorage.getItem('notifDays') || '30';
+  var isLight = localStorage.getItem('theme') === 'light';
+  document.getElementById('themeToggle').checked = isLight;
+  updateNotifStatus();
 }
 
 function saveSettings() {
-  var pat = document.getElementById('patInput').value.trim();
-  var repo = document.getElementById('repoInput').value.trim();
-  var path = document.getElementById('pathInput').value.trim();
-  localStorage.setItem('gh_pat', pat);
-  localStorage.setItem('gh_repo', repo);
-  localStorage.setItem('gh_path', path);
+  localStorage.setItem('gh_pat', document.getElementById('patInput').value.trim());
+  localStorage.setItem('gh_repo', document.getElementById('repoInput').value.trim());
+  localStorage.setItem('gh_path', document.getElementById('pathInput').value.trim());
+  localStorage.setItem('notifDays', document.getElementById('notifDays').value);
   showSettingsStatus('Settings saved.', true);
 }
 
 function showSettingsStatus(msg, ok) {
   var el = document.getElementById('settingsStatus');
-  el.textContent = msg;
-  el.className = 'status-msg ' + (ok ? 'ok' : 'err');
-  el.style.display = 'block';
+  el.textContent = msg; el.className = 'status-msg '+(ok?'ok':'err'); el.style.display = 'block';
   setTimeout(function() { el.style.display = 'none'; }, 4000);
 }
 
+// THEME
+function toggleTheme() {
+  var isLight = document.body.classList.contains('light');
+  document.body.classList.toggle('light', !isLight);
+  localStorage.setItem('theme', isLight ? 'dark' : 'light');
+  document.getElementById('themeBtn').textContent = isLight ? '🌙' : '☀️';
+  var toggle = document.getElementById('themeToggle');
+  if (toggle) toggle.checked = !isLight;
+}
+
+function applyThemeFromToggle() {
+  var isLight = document.getElementById('themeToggle').checked;
+  document.body.classList.toggle('light', isLight);
+  localStorage.setItem('theme', isLight ? 'light' : 'dark');
+  document.getElementById('themeBtn').textContent = isLight ? '☀️' : '🌙';
+}
+
+function applyStoredTheme() {
+  var theme = localStorage.getItem('theme');
+  if (theme === 'light') { document.body.classList.add('light'); document.getElementById('themeBtn').textContent = '☀️'; }
+}
+
+// GITHUB SYNC
 async function syncToGitHub() {
   var pat = localStorage.getItem('gh_pat') || '';
   var repo = localStorage.getItem('gh_repo') || 'schneidjii/schneidjii.github.io';
   var path = localStorage.getItem('gh_path') || 'garage-data.json';
   if (!pat) { showToast('Add your GitHub token in Settings first'); return; }
   var btn = document.getElementById('syncBtn');
-  btn.classList.add('syncing');
-  btn.textContent = '⇅ Syncing...';
+  btn.classList.add('syncing'); btn.textContent = '⇅ Syncing...';
   try {
-    var getSha = await fetch('https://api.github.com/repos/' + repo + '/contents/' + path, {
-      headers: { Authorization: 'token ' + pat, Accept: 'application/vnd.github.v3+json' }
-    });
+    var getSha = await fetch('https://api.github.com/repos/'+repo+'/contents/'+path, { headers:{Authorization:'token '+pat,Accept:'application/vnd.github.v3+json'} });
     var sha = null;
-    if (getSha.ok) { var existing = await getSha.json(); sha = existing.sha; }
+    if (getSha.ok) { var ex = await getSha.json(); sha = ex.sha; }
     var content = btoa(unescape(encodeURIComponent(JSON.stringify(appData, null, 2))));
-    var body = { message: 'Garage Manager sync ' + new Date().toISOString(), content: content };
+    var body = { message:'Garage Manager sync '+new Date().toISOString(), content:content };
     if (sha) body.sha = sha;
-    var putRes = await fetch('https://api.github.com/repos/' + repo + '/contents/' + path, {
-      method: 'PUT',
-      headers: { Authorization: 'token ' + pat, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    });
-    if (putRes.ok) {
-      showToast('Synced to GitHub ✓');
-      showSettingsStatus('Synced successfully!', true);
-    } else {
-      var err = await putRes.json();
-      showToast('Sync failed: ' + (err.message || 'Unknown error'));
-      showSettingsStatus('Sync failed: ' + (err.message || ''), false);
-    }
-  } catch(e) {
-    showToast('Sync error: ' + e.message);
-  }
-  btn.classList.remove('syncing');
-  btn.textContent = '⇅ Sync';
+    var putRes = await fetch('https://api.github.com/repos/'+repo+'/contents/'+path, { method:'PUT', headers:{Authorization:'token '+pat,Accept:'application/vnd.github.v3+json','Content-Type':'application/json'}, body:JSON.stringify(body) });
+    if (putRes.ok) { showToast('Synced to GitHub ✓'); showSettingsStatus('Synced!', true); }
+    else { var err = await putRes.json(); showToast('Sync failed: '+(err.message||'')); }
+  } catch(e) { showToast('Sync error: '+e.message); }
+  btn.classList.remove('syncing'); btn.textContent = '⇅ Sync';
+}
+
+async function loadFromGitHub() {
+  var pat = localStorage.getItem('gh_pat') || '';
+  var repo = localStorage.getItem('gh_repo') || 'schneidjii/schneidjii.github.io';
+  var path = localStorage.getItem('gh_path') || 'garage-data.json';
+  if (!pat) { showToast('Add your GitHub token in Settings first'); return; }
+  try {
+    var res = await fetch('https://api.github.com/repos/'+repo+'/contents/'+path, { headers:{Authorization:'token '+pat,Accept:'application/vnd.github.v3+json'} });
+    if (!res.ok) { showToast('File not found on GitHub'); return; }
+    var json = await res.json();
+    var decoded = decodeURIComponent(escape(atob(json.content)));
+    appData = JSON.parse(decoded);
+    saveData(); renderFleet(); showToast('Loaded from GitHub ✓');
+  } catch(e) { showToast('Load error: '+e.message); }
 }
 
 function exportData() {
-  var json = JSON.stringify(appData, null, 2);
-  var blob = new Blob([json], {type: 'application/json'});
-  var a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'garage-backup-' + new Date().toISOString().slice(0,10) + '.json';
-  a.click();
+  var blob = new Blob([JSON.stringify(appData, null, 2)], {type:'application/json'});
+  var a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'garage-backup-'+new Date().toISOString().slice(0,10)+'.json'; a.click();
 }
-
 function importData() { document.getElementById('importFile').click(); }
-
 function handleImport(e) {
-  var file = e.target.files[0];
-  if (!file) return;
+  var file = e.target.files[0]; if (!file) return;
   var reader = new FileReader();
   reader.onload = function(ev) {
-    try {
-      appData = JSON.parse(ev.target.result);
-      saveData();
-      renderFleet();
-      showToast('Data imported!');
-    } catch(err) {
-      showToast('Import failed - invalid JSON');
-    }
+    try { appData = JSON.parse(ev.target.result); saveData(); renderFleet(); showToast('Data imported!'); }
+    catch(err) { showToast('Import failed - invalid JSON'); }
   };
   reader.readAsText(file);
 }
 
 function showToast(msg) {
-  var t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
+  var t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show');
   setTimeout(function() { t.classList.remove('show'); }, 3000);
 }
 
-document.getElementById('modalOverlay').addEventListener('click', function(e) {
-  if (e.target === this) closeModal();
-});
+document.getElementById('modalOverlay').addEventListener('click', function(e) { if (e.target===this) closeModal(); });
+document.getElementById('logModalOverlay').addEventListener('click', function(e) { if (e.target===this) closeLogModal(); });
+document.getElementById('ocrModalOverlay').addEventListener('click', function(e) { if (e.target===this) closeOcrModal(); });
 
+// INIT
+applyStoredTheme();
 loadData();
 renderFleet();
+checkAndNotify();
 </script>
 </body>
 </html>
