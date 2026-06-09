@@ -2456,6 +2456,14 @@
       "amount": 2.5,
       "date": "2026-05-31",
       "createdAt": "2026-05-31T18:03:26.916Z"
+    },
+    {
+      "id": 1781014370418.7598,
+      "kid": "Gavin",
+      "desc": "Steam credits",
+      "amount": -5,
+      "date": "2026-06-08",
+      "createdAt": "2026-06-09T14:12:50.419Z"
     }
   ],
   "log": [
@@ -2566,7 +2574,16 @@
       "amount": 2.5,
       "txDate": "2026-05-31",
       "extra": ""
+    },
+    {
+      "ts": "2026-06-09T14:12:50.419Z",
+      "action": "CREATE",
+      "kid": "Gavin",
+      "desc": "Steam credits",
+      "amount": -5,
+      "txDate": "2026-06-08",
+      "extra": ""
     }
   ],
-  "savedAt": "2026-05-31T18:03:26.918Z"
+  "savedAt": "2026-06-09T14:12:50.420Z"
 }
