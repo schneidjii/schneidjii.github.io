@@ -2472,6 +2472,14 @@
       "amount": 5,
       "date": "2026-06-07",
       "createdAt": "2026-06-09T14:13:17.276Z"
+    },
+    {
+      "id": 1781014412742.019,
+      "kid": "Kenleigh",
+      "desc": "DJ3 bet",
+      "amount": -5,
+      "date": "2026-06-07",
+      "createdAt": "2026-06-09T14:13:32.742Z"
     }
   ],
   "log": [
@@ -2600,7 +2608,16 @@
       "amount": 5,
       "txDate": "2026-06-07",
       "extra": ""
+    },
+    {
+      "ts": "2026-06-09T14:13:32.742Z",
+      "action": "CREATE",
+      "kid": "Kenleigh",
+      "desc": "DJ3 bet",
+      "amount": -5,
+      "txDate": "2026-06-07",
+      "extra": ""
     }
   ],
-  "savedAt": "2026-06-09T14:13:17.277Z"
+  "savedAt": "2026-06-09T14:13:32.743Z"
 }
