@@ -2480,6 +2480,14 @@
       "amount": -5,
       "date": "2026-06-07",
       "createdAt": "2026-06-09T14:13:32.742Z"
+    },
+    {
+      "id": 1781014438256.8838,
+      "kid": "Donald John",
+      "desc": "Cash Dep",
+      "amount": 10,
+      "date": "2026-06-08",
+      "createdAt": "2026-06-09T14:13:58.256Z"
     }
   ],
   "log": [
@@ -2617,7 +2625,16 @@
       "amount": -5,
       "txDate": "2026-06-07",
       "extra": ""
+    },
+    {
+      "ts": "2026-06-09T14:13:58.256Z",
+      "action": "CREATE",
+      "kid": "Donald John",
+      "desc": "Cash Dep",
+      "amount": 10,
+      "txDate": "2026-06-08",
+      "extra": ""
     }
   ],
-  "savedAt": "2026-06-09T14:13:32.743Z"
+  "savedAt": "2026-06-09T14:13:58.257Z"
 }
