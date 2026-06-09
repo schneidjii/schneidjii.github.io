@@ -2464,6 +2464,14 @@
       "amount": -5,
       "date": "2026-06-08",
       "createdAt": "2026-06-09T14:12:50.419Z"
+    },
+    {
+      "id": 1781014397275.9927,
+      "kid": "Donald John",
+      "desc": "KLS bet",
+      "amount": 5,
+      "date": "2026-06-07",
+      "createdAt": "2026-06-09T14:13:17.276Z"
     }
   ],
   "log": [
@@ -2583,7 +2591,16 @@
       "amount": -5,
       "txDate": "2026-06-08",
       "extra": ""
+    },
+    {
+      "ts": "2026-06-09T14:13:17.276Z",
+      "action": "CREATE",
+      "kid": "Donald John",
+      "desc": "KLS bet",
+      "amount": 5,
+      "txDate": "2026-06-07",
+      "extra": ""
     }
   ],
-  "savedAt": "2026-06-09T14:12:50.420Z"
+  "savedAt": "2026-06-09T14:13:17.277Z"
 }
